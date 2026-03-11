@@ -1,0 +1,2081 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Procore — SF Office Search</title>
+
+<!-- Leaflet CSS -->
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+
+<!-- Fonts -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+<style>
+/* ============================================================
+   Design Tokens
+   ============================================================ */
+
+:root {
+  --font-body: 'Inter', 'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-display: 'DM Sans', 'Inter', sans-serif;
+
+  /* Type scale */
+  --text-xs:   clamp(0.75rem,  0.7rem  + 0.25vw, 0.875rem);
+  --text-sm:   clamp(0.8125rem, 0.78rem + 0.2vw, 0.9375rem);
+  --text-base: clamp(0.875rem, 0.85rem + 0.15vw, 1rem);
+  --text-lg:   clamp(1rem, 0.95rem + 0.35vw, 1.25rem);
+  --text-xl:   clamp(1.25rem, 1.1rem + 0.75vw, 1.75rem);
+
+  /* Spacing */
+  --space-1:  0.25rem;
+  --space-2:  0.5rem;
+  --space-3:  0.75rem;
+  --space-4:  1rem;
+  --space-5:  1.25rem;
+  --space-6:  1.5rem;
+  --space-8:  2rem;
+
+  /* Light theme */
+  --color-bg: #f5f6f8;
+  --color-surface: #ffffff;
+  --color-surface-2: #f9fafb;
+  --color-border: #e2e5ea;
+  --color-divider: #ebedf0;
+  --color-text: #1a1d23;
+  --color-text-muted: #6b7280;
+  --color-text-faint: #9ca3af;
+  --color-primary: #f47920;
+  --color-primary-hover: #e06810;
+  --color-primary-dark: #c45a0e;
+  --color-accent-blue: #2563eb;
+  --color-accent-green: #059669;
+  --color-accent-purple: #7c3aed;
+
+  /* Radius */
+  --radius-sm: 0.375rem;
+  --radius-md: 0.5rem;
+  --radius-lg: 0.75rem;
+  --radius-xl: 1rem;
+
+  /* Shadows */
+  --shadow-sm: 0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04);
+  --shadow-md: 0 4px 12px rgba(0,0,0,0.08);
+  --shadow-lg: 0 12px 32px rgba(0,0,0,0.12);
+  --shadow-tooltip: 0 8px 30px rgba(0,0,0,0.14), 0 2px 8px rgba(0,0,0,0.06);
+
+  --transition: 200ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* ============================================================
+   Base Reset
+   ============================================================ */
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
+body {
+  min-height: 100dvh;
+  font-family: var(--font-body);
+  font-size: var(--text-base);
+  color: var(--color-text);
+  background: var(--color-bg);
+  line-height: 1.5;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ============================================================
+   Header
+   ============================================================ */
+
+.header {
+  background: var(--color-surface);
+  border-bottom: 1px solid var(--color-border);
+  padding: var(--space-3) var(--space-6);
+  z-index: 1000;
+  flex-shrink: 0;
+}
+
+.header-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  max-width: 1440px;
+  margin: 0 auto;
+}
+
+.header-left {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.logo {
+  color: var(--color-primary);
+  flex-shrink: 0;
+}
+
+.header-title-group {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+
+.header-title {
+  font-family: var(--font-display);
+  font-size: var(--text-lg);
+  font-weight: 700;
+  line-height: 1.2;
+  color: var(--color-text);
+}
+
+.header-subtitle {
+  font-size: var(--text-xs);
+  color: var(--color-text-muted);
+  font-weight: 500;
+  letter-spacing: 0.02em;
+}
+
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+}
+
+.header-date {
+  font-size: var(--text-xs);
+  color: var(--color-text-muted);
+  font-weight: 500;
+}
+
+/* ============================================================
+   Main & Map
+   ============================================================ */
+
+.main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+
+#map {
+  flex: 1;
+  min-height: 0;
+  z-index: 1;
+}
+
+/* ============================================================
+   Summary Bar (bottom cards)
+   ============================================================ */
+
+.summary-bar {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: var(--space-3);
+  padding: var(--space-4) var(--space-6);
+  background: var(--color-surface);
+  border-top: 1px solid var(--color-border);
+  z-index: 100;
+  flex-shrink: 0;
+}
+
+.summary-card {
+  background: var(--color-surface-2);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  padding: var(--space-4);
+  cursor: pointer;
+  transition: all var(--transition);
+  position: relative;
+  overflow: hidden;
+}
+
+.summary-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: var(--card-accent);
+  opacity: 0;
+  transition: opacity var(--transition);
+}
+
+.summary-card:hover {
+  border-color: var(--card-accent);
+  box-shadow: var(--shadow-md);
+  transform: translateY(-1px);
+}
+
+.summary-card:hover::before {
+  opacity: 1;
+}
+
+.summary-card.active {
+  border-color: var(--card-accent);
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--card-accent) 25%, transparent);
+}
+
+.summary-card.active::before {
+  opacity: 1;
+}
+
+.card-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  margin-bottom: var(--space-2);
+}
+
+.card-number {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: var(--card-accent);
+  color: white;
+  font-size: 0.6875rem;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+.card-landlord {
+  font-size: var(--text-xs);
+  color: var(--color-text-muted);
+  text-align: right;
+  max-width: 60%;
+  line-height: 1.3;
+}
+
+.card-name {
+  font-family: var(--font-display);
+  font-size: var(--text-sm);
+  font-weight: 700;
+  margin-bottom: 2px;
+  line-height: 1.3;
+}
+
+.card-address {
+  font-size: var(--text-xs);
+  color: var(--color-text-muted);
+  margin-bottom: var(--space-3);
+}
+
+.card-metrics {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-2);
+}
+
+.card-metric {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+
+.card-metric-label {
+  font-size: 0.625rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--color-text-faint);
+}
+
+.card-metric-value {
+  font-size: var(--text-xs);
+  font-weight: 600;
+  color: var(--color-text);
+}
+
+/* ============================================================
+   Custom Leaflet Tooltip
+   ============================================================ */
+
+.building-tooltip {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-tooltip);
+  padding: 0;
+  font-family: var(--font-body);
+  min-width: 340px;
+  max-width: 420px;
+  overflow: hidden;
+}
+
+.building-tooltip .leaflet-tooltip-content {
+  margin: 0;
+}
+
+.tooltip-accent-bar {
+  height: 4px;
+  width: 100%;
+}
+
+.tooltip-inner {
+  padding: var(--space-4) var(--space-5);
+}
+
+.tooltip-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-3);
+  margin-bottom: var(--space-4);
+  padding-bottom: var(--space-3);
+  border-bottom: 1px solid var(--color-divider);
+}
+
+.tooltip-title-group {
+  flex: 1;
+}
+
+.tooltip-name {
+  font-family: var(--font-display);
+  font-size: var(--text-lg);
+  font-weight: 700;
+  line-height: 1.2;
+  color: var(--color-text);
+  margin-bottom: 2px;
+}
+
+.tooltip-address {
+  font-size: var(--text-xs);
+  color: var(--color-text-muted);
+  line-height: 1.4;
+}
+
+.tooltip-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 3px 8px;
+  border-radius: var(--radius-sm);
+  font-size: 0.6875rem;
+  font-weight: 600;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.tooltip-badge.available {
+  background: #ecfdf5;
+  color: #047857;
+}
+
+.tooltip-badge.negotiating {
+  background: #fffbeb;
+  color: #b45309;
+}
+
+.tooltip-badge.touring {
+  background: #f3f4f6;
+  color: #6b7280;
+}
+
+.tooltip-section-label {
+  font-size: 0.625rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--color-text-faint);
+  margin-bottom: var(--space-2);
+}
+
+.tooltip-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-3);
+  margin-bottom: var(--space-4);
+}
+
+.tooltip-field {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.tooltip-field.full-width {
+  grid-column: 1 / -1;
+}
+
+.tooltip-field-label {
+  font-size: 0.625rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--color-text-faint);
+}
+
+.tooltip-field-value {
+  font-size: var(--text-xs);
+  font-weight: 600;
+  color: var(--color-text);
+  line-height: 1.3;
+  word-break: break-word;
+}
+
+/* Tooltip — wider variant for material terms */
+.building-tooltip.wide {
+  min-width: 380px;
+  max-width: 460px;
+}
+
+.tooltip-field-value.highlight {
+  color: var(--color-primary);
+  font-weight: 700;
+}
+
+.tooltip-tbd {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-3) var(--space-4);
+  background: var(--color-surface-2);
+  border-radius: var(--radius-md);
+  color: var(--color-text-muted);
+  font-size: var(--text-xs);
+  line-height: 1.4;
+}
+
+.tooltip-tbd svg {
+  flex-shrink: 0;
+  color: var(--color-text-faint);
+}
+
+.tooltip-financial {
+  padding-top: var(--space-3);
+  border-top: 1px solid var(--color-divider);
+  margin-top: var(--space-4);
+}
+
+.tooltip-fin-grid {
+  display: flex;
+  gap: var(--space-4);
+}
+
+.tooltip-fin-item {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  flex: 1;
+}
+
+.tooltip-fin-label {
+  font-size: 0.5625rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--color-text-faint);
+}
+
+.tooltip-fin-value {
+  font-size: var(--text-sm);
+  font-weight: 700;
+  color: var(--color-text);
+  font-variant-numeric: tabular-nums;
+}
+
+.tooltip-fin-value.primary {
+  color: var(--color-primary);
+}
+
+.tooltip-source {
+  margin-top: var(--space-3);
+  padding-top: var(--space-2);
+  border-top: 1px solid var(--color-divider);
+  font-size: 0.625rem;
+  color: var(--color-text-faint);
+  font-style: italic;
+}
+
+/* Card status badges */
+.card-status-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 2px 8px;
+  border-radius: var(--radius-sm);
+  font-size: 0.625rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.card-status-badge.negotiating {
+  background: #fffbeb;
+  color: #b45309;
+}
+
+.card-status-badge.touring {
+  background: #f3f4f6;
+  color: #6b7280;
+}
+
+.card-tbd {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  margin-top: var(--space-2);
+  color: var(--color-text-faint);
+  font-size: var(--text-xs);
+}
+
+.card-tbd svg {
+  flex-shrink: 0;
+}
+
+.tooltip-tenants {
+  padding-top: var(--space-3);
+  border-top: 1px solid var(--color-divider);
+}
+
+.tooltip-tenants-label {
+  font-size: 0.625rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--color-text-faint);
+  margin-bottom: var(--space-1);
+}
+
+.tooltip-tenants-value {
+  font-size: var(--text-xs);
+  color: var(--color-text-muted);
+  line-height: 1.4;
+}
+
+/* ============================================================
+   Custom Markers
+   ============================================================ */
+
+.custom-marker {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  color: white;
+  font-size: 0.8125rem;
+  font-weight: 700;
+  font-family: var(--font-display);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.25);
+  border: 3px solid white;
+  transition: all var(--transition);
+  cursor: pointer;
+}
+
+.custom-marker:hover {
+  transform: scale(1.2);
+  box-shadow: 0 4px 16px rgba(0,0,0,0.3);
+}
+
+.custom-marker.active {
+  transform: scale(1.3);
+  box-shadow: 0 4px 16px rgba(0,0,0,0.35);
+}
+
+/* Override Leaflet tooltip defaults */
+.leaflet-tooltip.building-tooltip {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  opacity: 1;
+}
+
+.leaflet-tooltip.building-tooltip::before {
+  display: none;
+}
+
+/* Popup overrides */
+.building-popup-wrapper .leaflet-popup-content-wrapper {
+  padding: 0;
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-tooltip);
+  border: 1px solid var(--color-border);
+  overflow: hidden;
+}
+
+.building-popup-wrapper .leaflet-popup-content {
+  margin: 0;
+  min-width: 300px;
+}
+
+.building-popup-wrapper .leaflet-popup-content .tooltip-inner {
+  max-height: 380px;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-border) transparent;
+}
+
+.building-popup-wrapper .leaflet-popup-content .tooltip-inner::-webkit-scrollbar {
+  width: 5px;
+}
+
+.building-popup-wrapper .leaflet-popup-content .tooltip-inner::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.building-popup-wrapper .leaflet-popup-content .tooltip-inner::-webkit-scrollbar-thumb {
+  background: var(--color-border);
+  border-radius: 3px;
+}
+
+.building-popup-wrapper .leaflet-popup-content .tooltip-inner::-webkit-scrollbar-thumb:hover {
+  background: var(--color-text-faint);
+}
+
+.building-popup-wrapper .leaflet-popup-close-button {
+  color: var(--color-text-muted) !important;
+  font-size: 20px !important;
+  padding: 6px 8px !important;
+  top: 4px !important;
+  right: 4px !important;
+  z-index: 10;
+}
+
+.building-popup-wrapper .leaflet-popup-close-button:hover {
+  color: var(--color-text) !important;
+}
+
+.building-popup-wrapper .leaflet-popup-tip {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  box-shadow: none;
+}
+
+/* ============================================================
+   Footer
+   ============================================================ */
+
+.footer {
+  background: var(--color-surface);
+  border-top: 1px solid var(--color-border);
+  padding: var(--space-2) var(--space-6);
+  text-align: center;
+  flex-shrink: 0;
+}
+
+.footer a {
+  font-size: var(--text-xs);
+  color: var(--color-text-faint);
+  text-decoration: none;
+  transition: color var(--transition);
+}
+
+.footer a:hover {
+  color: var(--color-text-muted);
+}
+
+/* ============================================================
+   Responsive
+   ============================================================ */
+
+@media (max-width: 900px) {
+  .summary-bar {
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--space-2);
+    padding: var(--space-3);
+  }
+
+  .header {
+    padding: var(--space-3) var(--space-4);
+  }
+}
+
+@media (max-width: 500px) {
+  .summary-bar {
+    grid-template-columns: 1fr;
+  }
+
+  .header-date {
+    display: none;
+  }
+}
+
+/* Leaflet overrides */
+.leaflet-control-zoom {
+  border: 1px solid var(--color-border) !important;
+  border-radius: var(--radius-md) !important;
+  overflow: hidden;
+  box-shadow: var(--shadow-sm) !important;
+}
+
+.leaflet-control-zoom a {
+  color: var(--color-text) !important;
+  background: var(--color-surface) !important;
+  border-bottom: 1px solid var(--color-divider) !important;
+  font-size: 16px !important;
+  width: 32px !important;
+  height: 32px !important;
+  line-height: 32px !important;
+}
+
+.leaflet-control-zoom a:hover {
+  background: var(--color-surface-2) !important;
+}
+
+/* Hide Leaflet attribution for cleaner look (our footer has attribution) */
+.leaflet-control-attribution {
+  font-size: 9px !important;
+  background: rgba(255,255,255,0.8) !important;
+  padding: 2px 6px !important;
+  border-radius: 4px 0 0 0 !important;
+}
+
+/* ============================================================
+   Survey Markers (gray dots for evaluated buildings)
+   ============================================================ */
+
+.survey-marker {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: #9ca3af;
+  color: white;
+  font-size: 0.5625rem;
+  font-weight: 700;
+  font-family: var(--font-display);
+  box-shadow: 0 1px 4px rgba(0,0,0,0.2);
+  border: 2px solid white;
+  transition: all var(--transition);
+  cursor: pointer;
+  opacity: 0.7;
+}
+
+.survey-marker:hover {
+  transform: scale(1.3);
+  opacity: 1;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+}
+
+/* Survey popup styling */
+.survey-popup-wrapper .leaflet-popup-content-wrapper {
+  padding: 0;
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-md);
+  border: 1px solid var(--color-border);
+  overflow: hidden;
+}
+
+.survey-popup-wrapper .leaflet-popup-content {
+  margin: 0;
+  min-width: 260px;
+  max-width: 320px;
+}
+
+.survey-popup-wrapper .leaflet-popup-close-button {
+  color: var(--color-text-muted) !important;
+  font-size: 18px !important;
+  padding: 4px 6px !important;
+  top: 2px !important;
+  right: 2px !important;
+  z-index: 10;
+}
+
+.survey-popup-wrapper .leaflet-popup-close-button:hover {
+  color: var(--color-text) !important;
+}
+
+.survey-popup-wrapper .leaflet-popup-tip {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  box-shadow: none;
+}
+
+.survey-tooltip {
+  background: var(--color-surface);
+  font-family: var(--font-body);
+}
+
+.survey-tooltip-bar {
+  height: 3px;
+  width: 100%;
+  background: #9ca3af;
+}
+
+.survey-tooltip-inner {
+  padding: var(--space-3) var(--space-4);
+}
+
+.survey-tooltip-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-2);
+  margin-bottom: var(--space-3);
+  padding-bottom: var(--space-2);
+  border-bottom: 1px solid var(--color-divider);
+}
+
+.survey-tooltip-name {
+  font-family: var(--font-display);
+  font-size: var(--text-base);
+  font-weight: 700;
+  line-height: 1.2;
+  color: var(--color-text);
+}
+
+.survey-tooltip-hood {
+  font-size: var(--text-xs);
+  color: var(--color-text-muted);
+  margin-top: 2px;
+}
+
+.survey-badge-evaluated {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  padding: 2px 7px;
+  border-radius: var(--radius-sm);
+  font-size: 0.625rem;
+  font-weight: 600;
+  white-space: nowrap;
+  background: #f3f4f6;
+  color: #6b7280;
+  flex-shrink: 0;
+}
+
+.survey-tooltip-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-2);
+}
+
+.survey-tooltip-field {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+
+.survey-tooltip-field.full {
+  grid-column: 1 / -1;
+}
+
+.survey-tooltip-field-label {
+  font-size: 0.5625rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--color-text-faint);
+}
+
+.survey-tooltip-field-value {
+  font-size: var(--text-xs);
+  font-weight: 600;
+  color: var(--color-text);
+  line-height: 1.3;
+}
+
+/* ============================================================
+   Legend
+   ============================================================ */
+
+.map-legend {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  padding: var(--space-3) var(--space-4);
+  box-shadow: var(--shadow-md);
+  font-family: var(--font-body);
+  min-width: 180px;
+}
+
+.legend-title {
+  font-family: var(--font-display);
+  font-size: var(--text-xs);
+  font-weight: 700;
+  color: var(--color-text);
+  margin-bottom: var(--space-2);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.legend-section {
+  margin-bottom: var(--space-2);
+}
+
+.legend-section:last-child {
+  margin-bottom: 0;
+}
+
+.legend-section-label {
+  font-size: 0.5625rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--color-text-faint);
+  margin-bottom: var(--space-1);
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: 2px 0;
+}
+
+.legend-dot {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  border: 2px solid white;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+}
+
+.legend-dot.survey {
+  width: 11px;
+  height: 11px;
+  background: #9ca3af;
+  opacity: 0.7;
+}
+
+.legend-label {
+  font-size: var(--text-xs);
+  color: var(--color-text-muted);
+  font-weight: 500;
+  line-height: 1.3;
+}
+
+.legend-divider {
+  height: 1px;
+  background: var(--color-divider);
+  margin: var(--space-2) 0;
+}
+
+.legend-count {
+  font-size: 0.625rem;
+  color: var(--color-text-faint);
+  font-weight: 500;
+  margin-top: var(--space-1);
+}
+
+/* ============================================================
+   Updated Header Subtitle
+   ============================================================ */
+
+
+/* Tooltip/popup name links */
+.tooltip-link,
+.survey-tooltip-link {
+  text-decoration: none;
+  color: var(--color-text);
+  display: block;
+  transition: color var(--transition);
+  cursor: pointer;
+}
+
+.tooltip-link:hover,
+.survey-tooltip-link:hover {
+  color: var(--color-primary);
+}
+
+.tooltip-link:hover svg,
+.survey-tooltip-link:hover svg {
+  opacity: 0.8 !important;
+  stroke: var(--color-primary);
+}
+
+.tooltip-link {
+  font-family: var(--font-display);
+  font-size: var(--text-lg);
+  font-weight: 700;
+  line-height: 1.2;
+  margin-bottom: 2px;
+}
+
+.survey-tooltip-link {
+  font-family: var(--font-display);
+  font-size: var(--text-base);
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+</style>
+</head>
+<body>
+
+<header class="header">
+  <div class="header-inner">
+    <div class="header-left">
+      <svg class="logo" width="28" height="28" viewBox="0 0 32 32" fill="none" aria-label="Procore logo">
+        <rect x="2" y="2" width="28" height="28" rx="6" stroke="currentColor" stroke-width="2.5"/>
+        <rect x="8" y="8" width="7" height="7" rx="1.5" fill="currentColor"/>
+        <rect x="17" y="8" width="7" height="7" rx="1.5" fill="currentColor" opacity="0.5"/>
+        <rect x="8" y="17" width="7" height="7" rx="1.5" fill="currentColor" opacity="0.5"/>
+        <rect x="17" y="17" width="7" height="7" rx="1.5" fill="currentColor" opacity="0.3"/>
+      </svg>
+      <div class="header-title-group">
+        <h1 class="header-title">Procore SF Office Search</h1>
+        <span class="header-subtitle">33 Buildings Evaluated &middot; 4 Shortlisted</span>
+      </div>
+    </div>
+    <div class="header-right">
+      <span class="header-date" id="dateDisplay"></span>
+    </div>
+  </div>
+</header>
+
+<main class="main">
+  <div id="map"></div>
+
+  <!-- Summary cards at bottom -->
+  <div class="summary-bar" id="summaryBar">
+    <!-- Cards injected by JS -->
+  </div>
+</main>
+
+<footer class="footer">
+  <span style="font-size:var(--text-xs);color:var(--color-text-faint);">
+    Savills Survey &middot; Feb 19, 2026 &middot; Prepared for Procore Technologies
+  </span>
+</footer>
+
+<!-- Leaflet JS -->
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script>
+// ============================================================
+// Building Data — Material Terms from Procore spreadsheet
+// ============================================================
+
+const BUILDINGS = [
+  {
+    id: 1,
+    name: "250 Brannan",
+    subtitle: "Procore Counter",
+    address: "250 Brannan St, San Francisco, CA 94107",
+    lat: 37.7829,
+    lng: -122.3911,
+    color: "#f47920",
+    status: "negotiating",
+    statusLabel: "Procore Counter",
+    dealType: "Sublease",
+    landlord: "Splunk Inc. (Sublandlord)",
+    masterLL: "Brannan Propco, LLC",
+    premisesRSF: "16,000 RSF",
+    suiteFloor: "Suite 3B, Partial 3rd Floor",
+    baseRent: "$43.00/RSF/yr",
+    rentBasis: "Modified Gross (net of janitorial)",
+    escalation: "3% annually",
+    leaseTerm: "63 months",
+    commencement: "June 1, 2026 (est.)",
+    expiration: "August 31, 2031",
+    freeRent: "5 months",
+    phasedOccupancy: "N/A",
+    tiAllowance: "None (as-is with FF&E)",
+    tiTreatment: "N/A",
+    opexPassthrough: "None (included in MG rate)",
+    parking: "5 spots @ $437/mo (flat)",
+    ffAndE: "Included, $1 buyout at expiry",
+    securityDeposit: "TBD (pending financial review)",
+    earlyAccess: "2 weeks (no rent)",
+    deliveryCondition: "As-is (Splunk branding removed)",
+    signage: "Building standard",
+    assignmentSublease: "Per Master Lease rights",
+    buildingAccess: "24/7/365",
+    dogs: "Not addressed",
+    broker: "Savills (Denis Karas)",
+    llBroker: "JLL (Travis James, Teva Myatt)",
+    // Financial summary
+    netCashRent: "$3,565,414",
+    slRentPSF: "$42.45/RSF/yr",
+    monthlyPL: "$106,594",
+    totalOccupancy: "$6,715,414",
+    allInPSF: "$79.95/RSF/yr",
+    source: "Splunk/Brannan redline counter 3/10/26",
+    pdfPage: 51
+  },
+  {
+    id: 2,
+    name: "123 Townsend",
+    subtitle: "LL Counter",
+    address: "123 Townsend St, San Francisco, CA 94107",
+    lat: 37.7801,
+    lng: -122.3910,
+    color: "#2563eb",
+    status: "negotiating",
+    statusLabel: "LL Counter",
+    dealType: "Direct Lease",
+    landlord: "Rubicon Point Partners, LLC",
+    masterLL: null,
+    premisesRSF: "23,031 RSF",
+    suiteFloor: "Suite 300, 3rd Floor",
+    baseRent: "$67.00/RSF/yr",
+    rentBasis: "Industrial Gross",
+    escalation: "3% annually",
+    leaseTerm: "60 months",
+    commencement: "June 1, 2026 (rebased)",
+    expiration: "May 31, 2031",
+    freeRent: "4 months",
+    phasedOccupancy: "50% for first 6 months",
+    tiAllowance: "$20/RSF ($460,620)",
+    tiTreatment: "Taken as free rent credit",
+    opexPassthrough: "Base Year 2026; increases pass-through",
+    parking: "TBD",
+    ffAndE: "Included, return at expiry",
+    securityDeposit: "TBD (pending financial review)",
+    earlyAccess: "2 weeks (no rent)",
+    deliveryCondition: "As-is",
+    signage: "Building standard",
+    assignmentSublease: "LL consent, 50/50 profit split",
+    buildingAccess: "Mon–Fri 8am–6pm (HVAC hours)",
+    dogs: "Generally not allowed",
+    broker: "Savills (Denis Karas)",
+    llBroker: "CBRE (Michael Brown, Danny Trainor)",
+    // Financial summary
+    netCashRent: "$7,088,837",
+    slRentPSF: "$61.56/RSF/yr",
+    monthlyPL: "$168,147",
+    totalOccupancy: "$10,088,837",
+    allInPSF: "$87.61/RSF/yr",
+    source: "Townsend LL counter 3/5/26",
+    pdfPage: 84
+  },
+  {
+    id: 3,
+    name: "301 Brannan",
+    subtitle: "The Brannans",
+    address: "301 Brannan St, San Francisco, CA 94107",
+    lat: 37.7830,
+    lng: -122.3930,
+    color: "#059669",
+    status: "touring",
+    statusLabel: "Tour Week of 3/16",
+    dealType: "TBD",
+    landlord: "TBD",
+    masterLL: null,
+    premisesRSF: "TBD",
+    suiteFloor: "TBD",
+    baseRent: "TBD",
+    rentBasis: "TBD",
+    escalation: "TBD",
+    leaseTerm: "TBD",
+    commencement: "TBD",
+    expiration: "TBD",
+    freeRent: "TBD",
+    phasedOccupancy: "TBD",
+    tiAllowance: "TBD",
+    tiTreatment: "TBD",
+    opexPassthrough: "TBD",
+    parking: "TBD",
+    ffAndE: "TBD",
+    securityDeposit: "TBD",
+    earlyAccess: "TBD",
+    deliveryCondition: "TBD",
+    signage: "TBD",
+    assignmentSublease: "TBD",
+    buildingAccess: "TBD",
+    dogs: "TBD",
+    broker: "Savills (Denis Karas)",
+    llBroker: "TBD",
+    netCashRent: "TBD",
+    slRentPSF: "TBD",
+    monthlyPL: "TBD",
+    totalOccupancy: "TBD",
+    allInPSF: "TBD",
+    source: null,
+    pdfPage: 63
+  },
+  {
+    id: 4,
+    name: "475 Brannan",
+    subtitle: "",
+    address: "475 Brannan St, San Francisco, CA 94107",
+    lat: 37.7789,
+    lng: -122.3956,
+    color: "#7c3aed",
+    status: "touring",
+    statusLabel: "Tour Week of 3/16",
+    dealType: "TBD",
+    landlord: "TBD",
+    masterLL: null,
+    premisesRSF: "TBD",
+    suiteFloor: "TBD",
+    baseRent: "TBD",
+    rentBasis: "TBD",
+    escalation: "TBD",
+    leaseTerm: "TBD",
+    commencement: "TBD",
+    expiration: "TBD",
+    freeRent: "TBD",
+    phasedOccupancy: "TBD",
+    tiAllowance: "TBD",
+    tiTreatment: "TBD",
+    opexPassthrough: "TBD",
+    parking: "TBD",
+    ffAndE: "TBD",
+    securityDeposit: "TBD",
+    earlyAccess: "TBD",
+    deliveryCondition: "TBD",
+    signage: "TBD",
+    assignmentSublease: "TBD",
+    buildingAccess: "TBD",
+    dogs: "TBD",
+    broker: "Savills (Denis Karas)",
+    llBroker: "TBD",
+    netCashRent: "TBD",
+    slRentPSF: "TBD",
+    monthlyPL: "TBD",
+    totalOccupancy: "TBD",
+    allInPSF: "TBD",
+    source: null,
+    pdfPage: 103
+  }
+];
+
+// ============================================================
+// Date Display
+// ============================================================
+
+const dateEl = document.getElementById("dateDisplay");
+if (dateEl) {
+  const now = new Date();
+  dateEl.textContent = now.toLocaleDateString("en-US", {
+    weekday: "long",
+    year: "numeric",
+    month: "long",
+    day: "numeric"
+  });
+}
+
+// ============================================================
+// Map Init
+// ============================================================
+
+const map = L.map("map", {
+  center: [37.7810, -122.3930],
+  zoom: 16,
+  zoomControl: true,
+  scrollWheelZoom: true
+});
+
+L.tileLayer("https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png", {
+  attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="https://carto.com/">CARTO</a>',
+  subdomains: "abcd",
+  maxZoom: 19
+}).addTo(map);
+
+// ============================================================
+// Popup Builder
+// ============================================================
+
+function buildPopup(b) {
+  const isNegotiating = b.status === "negotiating";
+  const badgeClass = isNegotiating ? "negotiating" : "touring";
+  const badgeDot = isNegotiating ? "#f59e0b" : "#6b7280";
+  const badgeLabel = b.statusLabel;
+
+  if (!isNegotiating) {
+    // TBD buildings — compact popup
+    return `
+      <div class="building-tooltip">
+        <div class="tooltip-accent-bar" style="background:${b.color}"></div>
+        <div class="tooltip-inner">
+          <div class="tooltip-header">
+            <div class="tooltip-title-group">
+              <a href="https://raw.githubusercontent.com/smoitoza/procore-sf-survey/main/Procore-Technologies-Survey-Final-2.19.26.pdf#page=${b.pdfPage}" class="tooltip-name tooltip-link" target="_blank" title="View in Savills Survey">${b.name} <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:middle;opacity:0.35;margin-left:2px"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg></a>
+              <div class="tooltip-address">${b.address}</div>
+            </div>
+            <span class="tooltip-badge ${badgeClass}">
+              <span style="display:inline-block;width:6px;height:6px;border-radius:50%;background:${badgeDot};"></span>
+              ${badgeLabel}
+            </span>
+          </div>
+          <div class="tooltip-tbd">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+            <span>Material terms pending — tour scheduled week of 3/16/26</span>
+          </div>
+        </div>
+      </div>
+    `;
+  }
+
+  // Full material terms popup for 250 Brannan and 123 Townsend
+  return `
+    <div class="building-tooltip wide">
+      <div class="tooltip-accent-bar" style="background:${b.color}"></div>
+      <div class="tooltip-inner">
+        <div class="tooltip-header">
+          <div class="tooltip-title-group">
+            <a href="https://raw.githubusercontent.com/smoitoza/procore-sf-survey/main/Procore-Technologies-Survey-Final-2.19.26.pdf#page=${b.pdfPage}" class="tooltip-name tooltip-link" target="_blank" title="View in Savills Survey">${b.name} <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:middle;opacity:0.35;margin-left:2px"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg></a>
+            <div class="tooltip-address">${b.suiteFloor} &middot; ${b.premisesRSF}</div>
+          </div>
+          <span class="tooltip-badge ${badgeClass}">
+            <span style="display:inline-block;width:6px;height:6px;border-radius:50%;background:${badgeDot};"></span>
+            ${badgeLabel}
+          </span>
+        </div>
+
+        <div class="tooltip-section-label">Deal Structure</div>
+        <div class="tooltip-grid">
+          <div class="tooltip-field">
+            <span class="tooltip-field-label">Deal Type</span>
+            <span class="tooltip-field-value">${b.dealType}</span>
+          </div>
+          <div class="tooltip-field">
+            <span class="tooltip-field-label">Landlord</span>
+            <span class="tooltip-field-value">${b.landlord.split(' (')[0]}</span>
+          </div>
+          <div class="tooltip-field">
+            <span class="tooltip-field-label">Base Rent</span>
+            <span class="tooltip-field-value highlight">${b.baseRent}</span>
+          </div>
+          <div class="tooltip-field">
+            <span class="tooltip-field-label">Rent Basis</span>
+            <span class="tooltip-field-value">${b.rentBasis}</span>
+          </div>
+        </div>
+
+        <div class="tooltip-section-label">Term & Dates</div>
+        <div class="tooltip-grid">
+          <div class="tooltip-field">
+            <span class="tooltip-field-label">Lease Term</span>
+            <span class="tooltip-field-value">${b.leaseTerm}</span>
+          </div>
+          <div class="tooltip-field">
+            <span class="tooltip-field-label">Escalation</span>
+            <span class="tooltip-field-value">${b.escalation}</span>
+          </div>
+          <div class="tooltip-field">
+            <span class="tooltip-field-label">Commencement</span>
+            <span class="tooltip-field-value">${b.commencement}</span>
+          </div>
+          <div class="tooltip-field">
+            <span class="tooltip-field-label">Expiration</span>
+            <span class="tooltip-field-value">${b.expiration}</span>
+          </div>
+        </div>
+
+        <div class="tooltip-section-label">Concessions</div>
+        <div class="tooltip-grid" style="margin-bottom:0">
+          <div class="tooltip-field">
+            <span class="tooltip-field-label">Free Rent</span>
+            <span class="tooltip-field-value">${b.freeRent}</span>
+          </div>
+          <div class="tooltip-field">
+            <span class="tooltip-field-label">TI Allowance</span>
+            <span class="tooltip-field-value">${b.tiAllowance}</span>
+          </div>
+          <div class="tooltip-field">
+            <span class="tooltip-field-label">FF&E</span>
+            <span class="tooltip-field-value">${b.ffAndE}</span>
+          </div>
+          <div class="tooltip-field">
+            <span class="tooltip-field-label">Early Access</span>
+            <span class="tooltip-field-value">${b.earlyAccess}</span>
+          </div>
+        </div>
+
+        <div class="tooltip-financial">
+          <div class="tooltip-section-label" style="margin-top:var(--space-4)">Financial Summary</div>
+          <div class="tooltip-fin-grid">
+            <div class="tooltip-fin-item">
+              <span class="tooltip-fin-label">All-In</span>
+              <span class="tooltip-fin-value primary">${b.allInPSF}</span>
+            </div>
+            <div class="tooltip-fin-item">
+              <span class="tooltip-fin-label">Monthly P&L</span>
+              <span class="tooltip-fin-value">${b.monthlyPL}</span>
+            </div>
+            <div class="tooltip-fin-item">
+              <span class="tooltip-fin-label">Total Occupancy</span>
+              <span class="tooltip-fin-value">${b.totalOccupancy}</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="tooltip-source">
+          Source: ${b.source}
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+// ============================================================
+// Custom Markers
+// ============================================================
+
+const markers = [];
+
+BUILDINGS.forEach((b) => {
+  const icon = L.divIcon({
+    className: "custom-marker-wrapper",
+    html: `<div class="custom-marker" style="background:${b.color}" data-id="${b.id}">${b.id}</div>`,
+    iconSize: [36, 36],
+    iconAnchor: [18, 18]
+  });
+
+  const marker = L.marker([b.lat, b.lng], { icon }).addTo(map);
+
+  const popupHTML = buildPopup(b);
+
+  marker.bindPopup(popupHTML, {
+    className: "building-popup-wrapper",
+    maxWidth: 440,
+    minWidth: 320,
+    closeButton: true,
+    autoPan: true,
+    autoPanPadding: [20, 20],
+    offset: [0, -10]
+  });
+
+  // Open on hover, but keep open when mouse enters popup
+  marker.on('mouseover', function() {
+    this.openPopup();
+  });
+
+  // When popup opens, disable map scroll-zoom inside it
+  marker.on('popupopen', function() {
+    const popupEl = this.getPopup()?.getElement();
+    if (popupEl) {
+      popupEl.addEventListener('mouseenter', () => map.scrollWheelZoom.disable());
+      popupEl.addEventListener('mouseleave', () => map.scrollWheelZoom.enable());
+    }
+  });
+  marker.on('popupclose', function() {
+    map.scrollWheelZoom.enable();
+  });
+
+  marker._buildingId = b.id;
+  markers.push(marker);
+});
+
+// ============================================================
+// Summary Cards
+// ============================================================
+
+const summaryBar = document.getElementById("summaryBar");
+
+BUILDINGS.forEach((b) => {
+  const card = document.createElement("div");
+  card.className = "summary-card";
+  card.style.setProperty("--card-accent", b.color);
+  card.dataset.id = b.id;
+
+  const isNegotiating = b.status === "negotiating";
+
+  if (isNegotiating) {
+    card.innerHTML = `
+      <div class="card-header">
+        <span class="card-number" style="background:${b.color}">${b.id}</span>
+        <span class="card-status-badge negotiating">Negotiating</span>
+      </div>
+      <div class="card-name">${b.name}</div>
+      <div class="card-address">${b.suiteFloor} &middot; ${b.premisesRSF}</div>
+      <div class="card-metrics">
+        <div class="card-metric">
+          <span class="card-metric-label">Base Rent</span>
+          <span class="card-metric-value">${b.baseRent}</span>
+        </div>
+        <div class="card-metric">
+          <span class="card-metric-label">All-In Cost</span>
+          <span class="card-metric-value">${b.allInPSF}</span>
+        </div>
+        <div class="card-metric">
+          <span class="card-metric-label">Term</span>
+          <span class="card-metric-value">${b.leaseTerm}</span>
+        </div>
+        <div class="card-metric">
+          <span class="card-metric-label">Monthly P&L</span>
+          <span class="card-metric-value">${b.monthlyPL}</span>
+        </div>
+      </div>
+    `;
+  } else {
+    card.innerHTML = `
+      <div class="card-header">
+        <span class="card-number" style="background:${b.color}">${b.id}</span>
+        <span class="card-status-badge touring">Tour 3/16</span>
+      </div>
+      <div class="card-name">${b.name}</div>
+      <div class="card-address">${b.address.replace(", San Francisco, CA 94107", "")}</div>
+      <div class="card-tbd">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+        <span>Terms pending tour</span>
+      </div>
+    `;
+  }
+
+  card.addEventListener("click", () => {
+    document.querySelectorAll(".summary-card").forEach(c => c.classList.remove("active"));
+    card.classList.add("active");
+    map.flyTo([b.lat, b.lng], 17, { duration: 0.8 });
+    const marker = markers.find(m => m._buildingId === b.id);
+    if (marker) {
+      markers.forEach(m => m.closePopup());
+      setTimeout(() => marker.openPopup(), 400);
+    }
+  });
+
+  summaryBar.appendChild(card);
+});
+
+// ============================================================
+// Fit bounds
+// ============================================================
+
+// fitBounds handled after survey layer added
+
+// ============================================================
+// Survey Buildings (evaluated & passed)
+// ============================================================
+
+const PDF_PAGES = {"1": 3, "2": 6, "3": 9, "4": 16, "5": 19, "6": 23, "7": 26, "8": 30, "9": 33, "10": 40, "11": 44, "12": 48, "13": 51, "14": 54, "15": 58, "16": 63, "17": 71, "18": 73, "19": 78, "20": 81, "21": 84, "22": 89, "23": 92, "24": 97, "25": 100, "26": 103, "27": 108, "28": 111, "29": 114, "30": 117, "31": 120, "32": 123, "33": 126};
+const PDF_FILE = "https://raw.githubusercontent.com/smoitoza/procore-sf-survey/main/Procore-Technologies-Survey-Final-2.19.26.pdf";
+
+const SURVEY_BUILDINGS = [
+  {
+    num: 1,
+    address: '300 Mission Street',
+    neighborhood: 'Financial District',
+    owner: 'Rithm Capital Corp.',
+    yearBuiltClass: '1968; Renovated 2021 / Class A Office',
+    buildingSF: '668,197 SF',
+    stories: '23',
+    spaceAvailable: '223,413 SF',
+    rentalRate: 'Mid $80\'s FSG',
+    directSublease: 'Direct',
+    lat: 37.791124,
+    lng: -122.395997
+  },
+  {
+    num: 2,
+    address: '535 Mission Street',
+    neighborhood: 'Financial District',
+    owner: 'BXP, Inc.',
+    yearBuiltClass: '2015 / Class A Office',
+    buildingSF: '307,235 SF',
+    stories: '27',
+    spaceAvailable: '35,648 SF',
+    rentalRate: 'Upper $70\'s FSG',
+    directSublease: 'Direct',
+    lat: 37.7888591,
+    lng: -122.3981311
+  },
+  {
+    num: 3,
+    address: '85 2nd Street',
+    neighborhood: 'Financial District',
+    owner: 'Conner Properties',
+    yearBuiltClass: '1899; Renovated 1996 / Class B Office',
+    buildingSF: '124,245 SF',
+    stories: '8',
+    spaceAvailable: '49,114 SF',
+    rentalRate: 'Mid $60\'s FSG',
+    directSublease: 'Direct',
+    lat: 37.7884429,
+    lng: -122.4000177
+  },
+  {
+    num: 4,
+    address: '116-118 New Montgomery Street',
+    neighborhood: 'Financial District',
+    owner: 'Jamestown LP',
+    yearBuiltClass: '1902 / Class B Office',
+    buildingSF: '141,145 SF',
+    stories: '9',
+    spaceAvailable: '14,414 SF',
+    rentalRate: 'Mid $60\'s FSG',
+    directSublease: 'Direct',
+    lat: 37.7868299,
+    lng: -122.3997473
+  },
+  {
+    num: 5,
+    address: '140 New Montgomery Street',
+    neighborhood: 'Financial District',
+    owner: 'Pembroke Real Estate',
+    yearBuiltClass: '1925; Renovated 2013 / Class A Office',
+    buildingSF: '342,574 SF',
+    stories: '26',
+    spaceAvailable: '23,365 SF',
+    rentalRate: 'High $80\'s NOE',
+    directSublease: 'Direct',
+    lat: 37.786686,
+    lng: -122.3998909
+  },
+  {
+    num: 6,
+    address: '222 2nd Street',
+    neighborhood: 'Financial District',
+    owner: 'Tishman Speyer',
+    yearBuiltClass: '2015 / Class A Office',
+    buildingSF: '453,000 SF',
+    stories: '26',
+    spaceAvailable: '12,702 SF',
+    rentalRate: 'Mid $70\'s FSG',
+    directSublease: 'Sublease',
+    lat: 37.7864738,
+    lng: -122.3982635
+  },
+  {
+    num: 7,
+    address: '631 Howard Street',
+    neighborhood: 'Financial District',
+    owner: 'Flynn Properties, Inc.; Ellis Partners',
+    yearBuiltClass: '1929; Renovated 1968 / Class B Office',
+    buildingSF: '108,785 SF',
+    stories: '5',
+    spaceAvailable: '42,349 SF',
+    rentalRate: 'Mid $60\'s FSG',
+    directSublease: 'Direct',
+    lat: 37.7860106,
+    lng: -122.398638
+  },
+  {
+    num: 8,
+    address: '657 Howard Street',
+    neighborhood: 'Financial District',
+    owner: 'Kathan Brown',
+    yearBuiltClass: '1922 / Class C Office',
+    buildingSF: '27,600 SF',
+    stories: '2',
+    spaceAvailable: '13,800 SF',
+    rentalRate: 'Low $40\'s NNN',
+    directSublease: 'Direct',
+    lat: 37.7855996,
+    lng: -122.3996019
+  },
+  {
+    num: 9,
+    address: '620 Folsom Street',
+    neighborhood: 'Financial District',
+    owner: 'Conner Group',
+    yearBuiltClass: '1922; Renovated 1996 / Class B Office',
+    buildingSF: '49,800 SF',
+    stories: '3',
+    spaceAvailable: '49,800 SF',
+    rentalRate: 'Upper $30\'s FSG',
+    directSublease: 'Direct',
+    lat: 37.7852637,
+    lng: -122.3975911
+  },
+  {
+    num: 10,
+    address: '201 3rd Street',
+    neighborhood: 'Financial District',
+    owner: 'Kilroy Realty Corporation',
+    yearBuiltClass: '1982; Renovated 2022 / Class A Office',
+    buildingSF: '402,194 SF',
+    stories: '13',
+    spaceAvailable: '129,725 SF',
+    rentalRate: 'Upper $70\'s FSG',
+    directSublease: 'Direct',
+    lat: 37.7850747,
+    lng: -122.3998734
+  },
+  {
+    num: 11,
+    address: '22 4th Street',
+    neighborhood: 'Yerba Buena',
+    owner: 'Ponte Gadea USA, Inc.',
+    yearBuiltClass: '1980; Renovated 1999 / Class A Office',
+    buildingSF: '262,872 SF',
+    stories: '16',
+    spaceAvailable: '220,629 SF',
+    rentalRate: 'Mid $60\'s FSG',
+    directSublease: 'Direct',
+    lat: 37.7851137,
+    lng: -122.4051907
+  },
+  {
+    num: 12,
+    address: '132-140 Hawthorne Street',
+    neighborhood: 'Rincon/South Beach',
+    owner: 'WCM Ventures LLC',
+    yearBuiltClass: '1948 / Class B Office',
+    buildingSF: '14,250 SF',
+    stories: '2',
+    spaceAvailable: '14,250 SF',
+    rentalRate: 'High $60\'s iG',
+    directSublease: 'Direct',
+    lat: 37.7854188,
+    lng: -122.3987941
+  },
+  {
+    num: 14,
+    address: '360 3rd Street',
+    neighborhood: 'Yerba Buena',
+    owner: 'Kilroy Realty Corporation',
+    yearBuiltClass: '1976; Renovated 2008 / Class A Office',
+    buildingSF: '429,726 SF',
+    stories: '7',
+    spaceAvailable: '436,806 SF',
+    rentalRate: 'Mid $60\'s FSG',
+    directSublease: 'Direct',
+    lat: 37.782697,
+    lng: -122.3983632
+  },
+  {
+    num: 15,
+    address: '625 2nd Street',
+    neighborhood: 'Rincon/South Beach',
+    owner: 'Triyar Realty Group; Frontline Realty Capital',
+    yearBuiltClass: '1906; Renovated 1999 / Class B Office',
+    buildingSF: '171,187 SF',
+    stories: '4',
+    spaceAvailable: '41,570 SF',
+    rentalRate: '$45.00 IG',
+    directSublease: 'Direct',
+    lat: 37.7816852,
+    lng: -122.3910464
+  },
+  {
+    num: 17,
+    address: '500-520 3rd Street',
+    neighborhood: 'South of Market',
+    owner: 'Intereal Corporation',
+    yearBuiltClass: '1927; Renovated 2024 / Class B Office',
+    buildingSF: '155,480 SF',
+    stories: '5',
+    spaceAvailable: '51,540 SF',
+    rentalRate: '$45 IG',
+    directSublease: 'Direct',
+    lat: 37.7770526,
+    lng: -122.390521
+  },
+  {
+    num: 18,
+    address: '539 Bryant Street',
+    neighborhood: 'South of Market',
+    owner: 'TIAA',
+    yearBuiltClass: '1912; Renovated 1984 / Class B Office',
+    buildingSF: '73,128 SF',
+    stories: '4',
+    spaceAvailable: '28,677 SF',
+    rentalRate: 'Low $60\'s IG',
+    directSublease: 'Direct',
+    lat: 37.7803268,
+    lng: -122.3967867
+  },
+  {
+    num: 19,
+    address: '144 Townsend Street',
+    neighborhood: 'Rincon/South Beach',
+    owner: 'John Fox',
+    yearBuiltClass: '1922; Renovated 2015 / Class B Office',
+    buildingSF: '45,000 SF',
+    stories: '3',
+    spaceAvailable: '15,000 SF',
+    rentalRate: 'Deal Pending',
+    directSublease: 'Sublease',
+    lat: 37.7801049,
+    lng: -122.3919228
+  },
+  {
+    num: 20,
+    address: '625 3rd Street',
+    neighborhood: 'Rincon/South Beach',
+    owner: 'Jeffrey Palmer',
+    yearBuiltClass: '1908; Renovated 1995 / Class B Office',
+    buildingSF: '42,429 SF',
+    stories: '4',
+    spaceAvailable: '11,598 SF',
+    rentalRate: 'High $60\'s IG',
+    directSublease: 'Direct',
+    lat: 37.7797995,
+    lng: -122.3935209
+  },
+  {
+    num: 22,
+    address: '135 Townsend Street',
+    neighborhood: 'Rincon/South Beach',
+    owner: 'Storagepro, Inc.',
+    yearBuiltClass: '1913; Renovated 2017 / Class B Office',
+    buildingSF: '61,000 SF',
+    stories: '5',
+    spaceAvailable: '20,500 SF',
+    rentalRate: 'Negotiable',
+    directSublease: 'Direct',
+    lat: 37.7798294,
+    lng: -122.3910401
+  },
+  {
+    num: 23,
+    address: '139 Townsend Street',
+    neighborhood: 'Rincon/South Beach',
+    owner: 'Transwestern Real Estate Services',
+    yearBuiltClass: '1918; Renovated 1993 / Class B Office',
+    buildingSF: '14,483 SF',
+    stories: '2',
+    spaceAvailable: '6,807 SF',
+    rentalRate: 'High $30\'s FSG',
+    directSublease: 'Sublease',
+    lat: 37.7797063,
+    lng: -122.3914299
+  },
+  {
+    num: 24,
+    address: '665 3rd Street',
+    neighborhood: 'Rincon/South Beach',
+    owner: 'Samuelson & Schafer Properties',
+    yearBuiltClass: '1916; Renovated 1987 / Class C Office',
+    buildingSF: '134,445 SF',
+    stories: '5',
+    spaceAvailable: '49,536 SF',
+    rentalRate: 'Mid $30\'s IG',
+    directSublease: 'Direct',
+    lat: 37.7794076,
+    lng: -122.3932619
+  },
+  {
+    num: 25,
+    address: '660 3rd Street',
+    neighborhood: 'South of Market',
+    owner: '660 Third LLC',
+    yearBuiltClass: '1920; Renovated 1996 / Class B Office',
+    buildingSF: '88,000 SF',
+    stories: '4',
+    spaceAvailable: '20,467 SF',
+    rentalRate: 'Mid $30s IG',
+    directSublease: 'Direct',
+    lat: 37.779181,
+    lng: -122.3934935
+  },
+  {
+    num: 27,
+    address: '185 Berry Street',
+    neighborhood: 'Mission Bay/China Basin',
+    owner: 'JPMorgan Chase & Co.',
+    yearBuiltClass: '1920; Renovated 2020 / Class A Office',
+    buildingSF: '540,000 SF',
+    stories: '6',
+    spaceAvailable: '46,612 SF',
+    rentalRate: '$100-110',
+    directSublease: 'Direct',
+    lat: 37.7762432,
+    lng: -122.3917021
+  },
+  {
+    num: 28,
+    address: '410 Townsend Street',
+    neighborhood: 'South of Market',
+    owner: 'New York Life Real Estate Investors',
+    yearBuiltClass: '1912; Renovated 1999 / Class B Office',
+    buildingSF: '78,000 SF',
+    stories: '4',
+    spaceAvailable: '18,037 SF',
+    rentalRate: 'Mid $50\'s IG',
+    directSublease: 'Direct',
+    lat: 37.7753476,
+    lng: -122.3981266
+  },
+  {
+    num: 29,
+    address: '444 Townsend Street',
+    neighborhood: 'South of Market',
+    owner: 'Raymond Bregante',
+    yearBuiltClass: '1923 / Class C Office',
+    buildingSF: '81,295 SF',
+    stories: '2',
+    spaceAvailable: '29,000 SF',
+    rentalRate: 'Negotiable',
+    directSublease: 'Direct',
+    lat: 37.7749235,
+    lng: -122.3983908
+  },
+  {
+    num: 30,
+    address: '600 Townsend Street',
+    neighborhood: 'Showplace Square',
+    owner: 'Lincoln Property Company; New York Life Real Estate Investors',
+    yearBuiltClass: '1989 / Class B Office',
+    buildingSF: '208,529 SF',
+    stories: '5',
+    spaceAvailable: '53,976 SF',
+    rentalRate: 'Upper $60\'s IG',
+    directSublease: 'Direct',
+    lat: 37.7718544,
+    lng: -122.402559
+  },
+  {
+    num: 31,
+    address: '650 Townsend Street',
+    neighborhood: 'Showplace Square',
+    owner: 'Beacon Capital Partners',
+    yearBuiltClass: '1990; Renovated 2020 / Class B Office',
+    buildingSF: '756,770 SF',
+    stories: '6',
+    spaceAvailable: '427,435 SF',
+    rentalRate: 'Negotiable',
+    directSublease: 'Sublease',
+    lat: 37.7709567,
+    lng: -122.4036566
+  },
+  {
+    num: 32,
+    address: '1550 Bryant Street',
+    neighborhood: 'Mission/Potrero',
+    owner: 'Downtown Properties',
+    yearBuiltClass: '1915; Renovated 1985 / Class B Office',
+    buildingSF: '184,706 SF',
+    stories: '12',
+    spaceAvailable: '73,583 SF',
+    rentalRate: 'Negotiable',
+    directSublease: 'Direct',
+    lat: 37.7675516,
+    lng: -122.4111749
+  },
+  {
+    num: 33,
+    address: '2525-2545 16th Street',
+    neighborhood: 'Mission/Potrero',
+    owner: 'Angus F. & Sheila McCarthy',
+    yearBuiltClass: '1924 / Class B Office',
+    buildingSF: '177,640 SF',
+    stories: '4',
+    spaceAvailable: '34,897 SF',
+    rentalRate: 'Mid $40\'s',
+    directSublease: 'Direct',
+    lat: 37.766679,
+    lng: -122.3931655
+  }
+];
+
+function buildSurveyPopup(b) {
+  return `
+    <div class="survey-tooltip">
+      <div class="survey-tooltip-bar"></div>
+      <div class="survey-tooltip-inner">
+        <div class="survey-tooltip-header">
+          <div>
+            <a href="https://raw.githubusercontent.com/smoitoza/procore-sf-survey/main/Procore-Technologies-Survey-Final-2.19.26.pdf#page=${PDF_PAGES[b.num]}" class="survey-tooltip-name survey-tooltip-link" target="_blank" title="View in Savills Survey">${b.address} <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:middle;opacity:0.35;margin-left:2px"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg></a>
+            <div class="survey-tooltip-hood">${b.neighborhood}</div>
+          </div>
+          <span class="survey-badge-evaluated">Evaluated</span>
+        </div>
+        <div class="survey-tooltip-grid">
+          <div class="survey-tooltip-field">
+            <span class="survey-tooltip-field-label">Owner</span>
+            <span class="survey-tooltip-field-value">${b.owner.split(';')[0]}</span>
+          </div>
+          <div class="survey-tooltip-field">
+            <span class="survey-tooltip-field-label">Class</span>
+            <span class="survey-tooltip-field-value">${b.yearBuiltClass.split(' / ')[1] || b.yearBuiltClass}</span>
+          </div>
+          <div class="survey-tooltip-field">
+            <span class="survey-tooltip-field-label">Building Size</span>
+            <span class="survey-tooltip-field-value">${b.buildingSF} / ${b.stories} Stories</span>
+          </div>
+          <div class="survey-tooltip-field">
+            <span class="survey-tooltip-field-label">Available</span>
+            <span class="survey-tooltip-field-value">${b.spaceAvailable}</span>
+          </div>
+          <div class="survey-tooltip-field">
+            <span class="survey-tooltip-field-label">Asking Rate</span>
+            <span class="survey-tooltip-field-value">${b.rentalRate}</span>
+          </div>
+          <div class="survey-tooltip-field">
+            <span class="survey-tooltip-field-label">Type</span>
+            <span class="survey-tooltip-field-value">${b.directSublease}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+const surveyMarkers = [];
+
+SURVEY_BUILDINGS.forEach((b) => {
+  const icon = L.divIcon({
+    className: 'survey-marker-wrapper',
+    html: `<div class="survey-marker">${b.num}</div>`,
+    iconSize: [22, 22],
+    iconAnchor: [11, 11]
+  });
+
+  const marker = L.marker([b.lat, b.lng], { icon }).addTo(map);
+
+  marker.bindPopup(buildSurveyPopup(b), {
+    className: 'survey-popup-wrapper',
+    maxWidth: 340,
+    minWidth: 260,
+    closeButton: true,
+    autoPan: true,
+    autoPanPadding: [20, 20],
+    offset: [0, -5]
+  });
+
+  marker.on('mouseover', function() {
+    this.openPopup();
+  });
+
+  surveyMarkers.push(marker);
+});
+
+// Re-fit bounds to include all markers
+const allMarkers = [...markers, ...surveyMarkers];
+const allGroup = L.featureGroup(allMarkers);
+map.fitBounds(allGroup.getBounds().pad(0.15));
+
+
+
+// ============================================================
+// Map Legend (as Leaflet control)
+// ============================================================
+
+const legend = L.control({ position: 'topright' });
+
+legend.onAdd = function(map) {
+  const div = L.DomUtil.create('div', 'map-legend');
+  div.innerHTML = `
+    <div class="legend-title">Legend</div>
+    <div class="legend-section">
+      <div class="legend-section-label">Shortlisted (4)</div>
+      <div class="legend-item">
+        <div class="legend-dot" style="background:#f47920;"></div>
+        <span class="legend-label">250 Brannan</span>
+      </div>
+      <div class="legend-item">
+        <div class="legend-dot" style="background:#2563eb;"></div>
+        <span class="legend-label">123 Townsend</span>
+      </div>
+      <div class="legend-item">
+        <div class="legend-dot" style="background:#059669;"></div>
+        <span class="legend-label">301 Brannan</span>
+      </div>
+      <div class="legend-item">
+        <div class="legend-dot" style="background:#7c3aed;"></div>
+        <span class="legend-label">475 Brannan</span>
+      </div>
+    </div>
+    <div class="legend-divider"></div>
+    <div class="legend-section">
+      <div class="legend-section-label">Evaluated (29)</div>
+      <div class="legend-item">
+        <div class="legend-dot survey"></div>
+        <span class="legend-label">Surveyed & passed</span>
+      </div>
+    </div>
+    <div class="legend-count">Savills Survey &middot; Feb 19, 2026</div>
+      <div class="legend-count" style="margin-top:4px;font-style:italic;">Click building names to open survey PDF</div>
+  `;
+  
+  // Prevent map interactions when clicking/scrolling on legend
+  L.DomEvent.disableClickPropagation(div);
+  L.DomEvent.disableScrollPropagation(div);
+  
+  return div;
+};
+
+legend.addTo(map);
+
+</script>
+</body>
+</html>
