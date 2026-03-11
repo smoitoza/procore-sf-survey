@@ -691,15 +691,145 @@ body {
   .header {
     padding: var(--space-3) var(--space-4);
   }
+
+  /* Ensure map gets adequate space */
+  #map {
+    min-height: 55vh;
+  }
+
+  /* Scale down legend for tablets */
+  .map-legend {
+    max-width: 170px;
+    padding: var(--space-2) var(--space-3);
+  }
+
+  .legend-label {
+    font-size: 0.6875rem;
+  }
 }
 
 @media (max-width: 500px) {
-  .summary-bar {
-    grid-template-columns: 1fr;
+  /* Map takes most of the screen on mobile */
+  #map {
+    min-height: 60vh;
   }
 
   .header-date {
     display: none;
+  }
+
+  .header-title {
+    font-size: var(--text-base);
+  }
+
+  .header-subtitle {
+    font-size: 0.625rem;
+  }
+
+  /* Horizontal scrolling cards instead of stacking */
+  .summary-bar {
+    display: flex;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scroll-snap-type: x mandatory;
+    gap: var(--space-2);
+    padding: var(--space-3);
+    scrollbar-width: none;
+  }
+
+  .summary-bar::-webkit-scrollbar {
+    display: none;
+  }
+
+  .summary-card {
+    min-width: 260px;
+    flex-shrink: 0;
+    scroll-snap-align: start;
+  }
+
+  /* Compact legend on mobile */
+  .map-legend {
+    max-width: 150px;
+    padding: var(--space-2);
+    font-size: 0.625rem;
+  }
+
+  .legend-title {
+    font-size: 0.625rem;
+    margin-bottom: var(--space-1);
+  }
+
+  .legend-section-label {
+    font-size: 0.5rem;
+  }
+
+  .legend-label {
+    font-size: 0.625rem;
+  }
+
+  .legend-dot {
+    width: 10px;
+    height: 10px;
+  }
+
+  .legend-dot.survey {
+    width: 8px;
+    height: 8px;
+  }
+
+  .legend-item {
+    gap: var(--space-1);
+  }
+
+  .legend-count {
+    font-size: 0.5rem;
+  }
+
+  .legend-divider {
+    margin: var(--space-1) 0;
+  }
+
+  /* Smaller popups on mobile */
+  .building-tooltip.wide {
+    min-width: 280px;
+    max-width: 320px;
+  }
+
+  .building-popup-wrapper .leaflet-popup-content {
+    min-width: 260px;
+  }
+
+  .building-popup-wrapper .leaflet-popup-content .tooltip-inner {
+    max-height: 300px;
+    padding: var(--space-3) var(--space-4);
+  }
+
+  .tooltip-name, .tooltip-link {
+    font-size: var(--text-base) !important;
+  }
+
+  .tooltip-grid {
+    gap: var(--space-2);
+  }
+
+  .tooltip-fin-grid {
+    flex-direction: column;
+    gap: var(--space-2);
+  }
+
+  /* Survey popups */
+  .survey-popup-wrapper .leaflet-popup-content {
+    min-width: 240px;
+    max-width: 280px;
+  }
+
+  /* Footer */
+  .footer {
+    padding: var(--space-1) var(--space-3);
+  }
+
+  .footer span {
+    font-size: 0.5625rem;
   }
 }
 
