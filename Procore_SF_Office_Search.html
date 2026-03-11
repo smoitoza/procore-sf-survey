@@ -747,16 +747,43 @@ body {
     scroll-snap-align: start;
   }
 
-  /* Compact legend on mobile */
+  /* Collapsible legend on mobile */
   .map-legend {
-    max-width: 150px;
+    max-width: 140px;
     padding: var(--space-2);
     font-size: 0.625rem;
   }
 
+  .map-legend .legend-body {
+    display: none;
+  }
+
+  .map-legend.open .legend-body {
+    display: block;
+  }
+
   .legend-title {
     font-size: 0.625rem;
+    margin-bottom: 0;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .legend-title::after {
+    content: '\25BC';
+    font-size: 0.5rem;
+    opacity: 0.4;
+    transition: transform 200ms;
+  }
+
+  .map-legend.open .legend-title {
     margin-bottom: var(--space-1);
+  }
+
+  .map-legend.open .legend-title::after {
+    transform: rotate(180deg);
   }
 
   .legend-section-label {
@@ -2166,40 +2193,48 @@ legend.onAdd = function(map) {
   const div = L.DomUtil.create('div', 'map-legend');
   div.innerHTML = `
     <div class="legend-title">Legend</div>
-    <div class="legend-section">
-      <div class="legend-section-label">Shortlisted (4)</div>
-      <div class="legend-item">
-        <div class="legend-dot" style="background:#f47920;"></div>
-        <span class="legend-label">250 Brannan</span>
+    <div class="legend-body">
+      <div class="legend-section">
+        <div class="legend-section-label">Shortlisted (4)</div>
+        <div class="legend-item">
+          <div class="legend-dot" style="background:#f47920;"></div>
+          <span class="legend-label">250 Brannan</span>
+        </div>
+        <div class="legend-item">
+          <div class="legend-dot" style="background:#2563eb;"></div>
+          <span class="legend-label">123 Townsend</span>
+        </div>
+        <div class="legend-item">
+          <div class="legend-dot" style="background:#059669;"></div>
+          <span class="legend-label">301 Brannan</span>
+        </div>
+        <div class="legend-item">
+          <div class="legend-dot" style="background:#7c3aed;"></div>
+          <span class="legend-label">475 Brannan</span>
+        </div>
       </div>
-      <div class="legend-item">
-        <div class="legend-dot" style="background:#2563eb;"></div>
-        <span class="legend-label">123 Townsend</span>
+      <div class="legend-divider"></div>
+      <div class="legend-section">
+        <div class="legend-section-label">Evaluated (29)</div>
+        <div class="legend-item">
+          <div class="legend-dot survey"></div>
+          <span class="legend-label">Surveyed & passed</span>
+        </div>
       </div>
-      <div class="legend-item">
-        <div class="legend-dot" style="background:#059669;"></div>
-        <span class="legend-label">301 Brannan</span>
-      </div>
-      <div class="legend-item">
-        <div class="legend-dot" style="background:#7c3aed;"></div>
-        <span class="legend-label">475 Brannan</span>
-      </div>
-    </div>
-    <div class="legend-divider"></div>
-    <div class="legend-section">
-      <div class="legend-section-label">Evaluated (29)</div>
-      <div class="legend-item">
-        <div class="legend-dot survey"></div>
-        <span class="legend-label">Surveyed & passed</span>
-      </div>
-    </div>
-    <div class="legend-count">Savills Survey &middot; Feb 19, 2026</div>
+      <div class="legend-count">Savills Survey &middot; Feb 19, 2026</div>
       <div class="legend-count" style="margin-top:4px;font-style:italic;">Click building names to open survey PDF</div>
+    </div>
   `;
   
   // Prevent map interactions when clicking/scrolling on legend
   L.DomEvent.disableClickPropagation(div);
   L.DomEvent.disableScrollPropagation(div);
+
+  // Mobile: toggle legend on tap
+  const title = div.querySelector('.legend-title');
+  title.addEventListener('click', function() {
+    div.classList.toggle('open');
+  });
   
   return div;
 };
