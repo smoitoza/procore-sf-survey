@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Procore — SF Office Search</title>
+<title>SF Office Search</title>
 
 <!-- Leaflet CSS -->
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
@@ -1169,7 +1169,7 @@ body {
 <header class="header">
   <div class="header-inner">
     <div class="header-left">
-      <svg class="logo" width="28" height="28" viewBox="0 0 32 32" fill="none" aria-label="Procore logo">
+      <svg class="logo" width="28" height="28" viewBox="0 0 32 32" fill="none" aria-label="SRE logo">
         <rect x="2" y="2" width="28" height="28" rx="6" stroke="currentColor" stroke-width="2.5"/>
         <rect x="8" y="8" width="7" height="7" rx="1.5" fill="currentColor"/>
         <rect x="17" y="8" width="7" height="7" rx="1.5" fill="currentColor" opacity="0.5"/>
@@ -1177,7 +1177,7 @@ body {
         <rect x="17" y="17" width="7" height="7" rx="1.5" fill="currentColor" opacity="0.3"/>
       </svg>
       <div class="header-title-group">
-        <h1 class="header-title">Procore SF Office Search</h1>
+        <h1 class="header-title">SF Office Search</h1>
         <span class="header-subtitle">33 Buildings Evaluated &middot; 4 Shortlisted</span>
       </div>
     </div>
@@ -1198,7 +1198,7 @@ body {
 
 <footer class="footer">
   <span style="font-size:var(--text-xs);color:var(--color-text-faint);">
-    Savills Survey &middot; Feb 19, 2026 &middot; Prepared for Procore Technologies
+    Broker Survey &middot; Feb 19, 2026 &middot; Sample Client
   </span>
 </footer>
 
@@ -1206,23 +1206,23 @@ body {
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script>
 // ============================================================
-// Building Data — Material Terms from Procore spreadsheet
+// Building Data — Material Terms
 // ============================================================
 
 const BUILDINGS = [
   {
     id: 1,
     name: "250 Brannan",
-    subtitle: "Procore Counter",
+    subtitle: "Client Counter",
     address: "250 Brannan St, San Francisco, CA 94107",
     lat: 37.7829,
     lng: -122.3911,
     color: "#f47920",
     status: "negotiating",
-    statusLabel: "Procore Counter",
+    statusLabel: "Client Counter",
     dealType: "Sublease",
-    landlord: "Splunk Inc. (Sublandlord)",
-    masterLL: "Brannan Propco, LLC",
+    landlord: "Sublandlord (Option A)",
+    masterLL: "Master Landlord, LLC",
     premisesRSF: "16,000 RSF",
     suiteFloor: "Suite 3B, Partial 3rd Floor",
     baseRent: "$43.00/RSF/yr",
@@ -1240,20 +1240,20 @@ const BUILDINGS = [
     ffAndE: "Included, $1 buyout at expiry",
     securityDeposit: "TBD (pending financial review)",
     earlyAccess: "2 weeks (no rent)",
-    deliveryCondition: "As-is (Splunk branding removed)",
+    deliveryCondition: "As-is (prior tenant branding removed)",
     signage: "Building standard",
     assignmentSublease: "Per Master Lease rights",
     buildingAccess: "24/7/365",
     dogs: "Not addressed",
-    broker: "Savills (Denis Karas)",
-    llBroker: "JLL (Travis James, Teva Myatt)",
+    broker: "Brokerage C (Tenant Rep)",
+    llBroker: "Brokerage A (Agent 1, Agent 2)",
     // Financial summary
     netCashRent: "$3,565,414",
     slRentPSF: "$42.45/RSF/yr",
     monthlyPL: "$106,594",
     totalOccupancy: "$6,715,414",
     allInPSF: "$79.95/RSF/yr",
-    source: "Splunk/Brannan redline counter 3/10/26",
+    source: "Sublandlord redline counter 3/10/26",
     pdfPage: 51
   },
   {
@@ -1267,7 +1267,7 @@ const BUILDINGS = [
     status: "negotiating",
     statusLabel: "LL Counter",
     dealType: "Direct Lease",
-    landlord: "Rubicon Point Partners, LLC",
+    landlord: "Landlord (Option B)",
     masterLL: null,
     premisesRSF: "23,031 RSF",
     suiteFloor: "Suite 300, 3rd Floor",
@@ -1291,8 +1291,8 @@ const BUILDINGS = [
     assignmentSublease: "LL consent, 50/50 profit split",
     buildingAccess: "Mon–Fri 8am–6pm (HVAC hours)",
     dogs: "Generally not allowed",
-    broker: "Savills (Denis Karas)",
-    llBroker: "CBRE (Michael Brown, Danny Trainor)",
+    broker: "Brokerage C (Tenant Rep)",
+    llBroker: "Brokerage B (Agent 3, Agent 4)",
     // Financial summary
     netCashRent: "$7,088,837",
     slRentPSF: "$61.56/RSF/yr",
@@ -1337,7 +1337,7 @@ const BUILDINGS = [
     assignmentSublease: "TBD",
     buildingAccess: "TBD",
     dogs: "TBD",
-    broker: "Savills (Denis Karas)",
+    broker: "Brokerage C (Tenant Rep)",
     llBroker: "TBD",
     netCashRent: "TBD",
     slRentPSF: "TBD",
@@ -1382,7 +1382,7 @@ const BUILDINGS = [
     assignmentSublease: "TBD",
     buildingAccess: "TBD",
     dogs: "TBD",
-    broker: "Savills (Denis Karas)",
+    broker: "Brokerage C (Tenant Rep)",
     llBroker: "TBD",
     netCashRent: "TBD",
     slRentPSF: "TBD",
@@ -1444,7 +1444,7 @@ function buildPopup(b) {
         <div class="tooltip-inner">
           <div class="tooltip-header">
             <div class="tooltip-title-group">
-              <a href="https://smoitoza.github.io/procore-sf-survey/survey-120dpi.pdf#page=${b.pdfPage}" class="tooltip-name tooltip-link" target="_blank" title="View in Savills Survey">${b.name} <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:middle;opacity:0.35;margin-left:2px"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg></a>
+              <a href="https://smoitoza.github.io/procore-sf-survey/survey-120dpi.pdf#page=${b.pdfPage}" class="tooltip-name tooltip-link" target="_blank" title="View in Survey">${b.name} <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:middle;opacity:0.35;margin-left:2px"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg></a>
               <div class="tooltip-address">${b.address}</div>
             </div>
             <span class="tooltip-badge ${badgeClass}">
@@ -1468,7 +1468,7 @@ function buildPopup(b) {
       <div class="tooltip-inner">
         <div class="tooltip-header">
           <div class="tooltip-title-group">
-            <a href="https://smoitoza.github.io/procore-sf-survey/survey-120dpi.pdf#page=${b.pdfPage}" class="tooltip-name tooltip-link" target="_blank" title="View in Savills Survey">${b.name} <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:middle;opacity:0.35;margin-left:2px"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg></a>
+            <a href="https://smoitoza.github.io/procore-sf-survey/survey-120dpi.pdf#page=${b.pdfPage}" class="tooltip-name tooltip-link" target="_blank" title="View in Survey">${b.name} <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:middle;opacity:0.35;margin-left:2px"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg></a>
             <div class="tooltip-address">${b.suiteFloor} &middot; ${b.premisesRSF}</div>
           </div>
           <span class="tooltip-badge ${badgeClass}">
@@ -2111,7 +2111,7 @@ function buildSurveyPopup(b) {
       <div class="survey-tooltip-inner">
         <div class="survey-tooltip-header">
           <div>
-            <a href="https://smoitoza.github.io/procore-sf-survey/survey-120dpi.pdf#page=${PDF_PAGES[b.num]}" class="survey-tooltip-name survey-tooltip-link" target="_blank" title="View in Savills Survey">${b.address} <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:middle;opacity:0.35;margin-left:2px"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg></a>
+            <a href="https://smoitoza.github.io/procore-sf-survey/survey-120dpi.pdf#page=${PDF_PAGES[b.num]}" class="survey-tooltip-name survey-tooltip-link" target="_blank" title="View in Survey">${b.address} <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:middle;opacity:0.35;margin-left:2px"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg></a>
             <div class="survey-tooltip-hood">${b.neighborhood}</div>
           </div>
           <span class="survey-badge-evaluated">Evaluated</span>
@@ -2221,7 +2221,7 @@ legend.onAdd = function(map) {
           <span class="legend-label">Surveyed & passed</span>
         </div>
       </div>
-      <div class="legend-count">Savills Survey &middot; Feb 19, 2026</div>
+      <div class="legend-count">Broker Survey &middot; Feb 19, 2026</div>
       <div class="legend-count" style="margin-top:4px;font-style:italic;">Click building names to open survey PDF</div>
     </div>
   `;
