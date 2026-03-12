@@ -1382,6 +1382,409 @@ body {
     }
 
 
+    /* ===== TOUR BOOK TAB ===== */
+    .tourbook-container {
+      padding: var(--space-4);
+      overflow-y: auto;
+      flex: 1;
+      background: var(--color-bg);
+    }
+    .tourbook-empty {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: var(--space-16) var(--space-4);
+      text-align: center;
+      color: var(--color-text-muted);
+      gap: var(--space-4);
+    }
+    .tourbook-empty svg { opacity: 0.3; }
+    .tourbook-empty p { max-width: 360px; line-height: 1.6; }
+    .tourbook-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: var(--space-4);
+      padding-bottom: var(--space-3);
+      border-bottom: 1px solid var(--color-border);
+    }
+    .tourbook-header h2 {
+      font-family: var(--font-display);
+      font-size: var(--text-lg);
+      font-weight: 700;
+      color: var(--color-text);
+    }
+    .tourbook-header span {
+      font-size: var(--text-sm);
+      color: var(--color-text-muted);
+    }
+    .tourbook-export-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 16px;
+      background: var(--color-primary);
+      color: #fff;
+      border: none;
+      border-radius: var(--radius-md);
+      font-family: var(--font-body);
+      font-size: var(--text-sm);
+      font-weight: 600;
+      cursor: pointer;
+      transition: background var(--transition);
+    }
+    .tourbook-export-btn:hover { background: var(--color-primary-hover); }
+
+    .tourbook-card {
+      background: var(--color-surface);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-lg);
+      margin-bottom: var(--space-4);
+      overflow: hidden;
+      transition: box-shadow var(--transition);
+    }
+    .tourbook-card:hover {
+      box-shadow: var(--shadow-md);
+    }
+    .tourbook-card-header {
+      display: flex;
+      align-items: center;
+      gap: var(--space-3);
+      padding: var(--space-4);
+      border-bottom: 1px solid var(--color-divider);
+      cursor: pointer;
+      user-select: none;
+    }
+    .tourbook-card-header:hover {
+      background: var(--color-surface-2);
+    }
+    .tourbook-card-dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+    .tourbook-card-title {
+      font-family: var(--font-display);
+      font-size: var(--text-base);
+      font-weight: 700;
+      color: var(--color-text);
+      flex: 1;
+    }
+    .tourbook-card-meta {
+      font-size: var(--text-xs);
+      color: var(--color-text-muted);
+    }
+    .tourbook-card-chevron {
+      transition: transform var(--transition);
+      color: var(--color-text-faint);
+    }
+    .tourbook-card.expanded .tourbook-card-chevron {
+      transform: rotate(180deg);
+    }
+    .tourbook-card-body {
+      display: none;
+      padding: var(--space-4);
+    }
+    .tourbook-card.expanded .tourbook-card-body {
+      display: block;
+    }
+    .tourbook-card-tags {
+      display: flex;
+      gap: var(--space-2);
+      flex-wrap: wrap;
+      margin-top: 2px;
+    }
+    .tourbook-card-tag {
+      font-size: 0.65rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      padding: 2px 8px;
+      border-radius: 999px;
+      background: rgba(244,121,32,0.1);
+      color: var(--color-primary);
+    }
+
+    /* Scoring grid */
+    .tourbook-scores {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: var(--space-3);
+      margin-bottom: var(--space-4);
+    }
+    .tourbook-score-item {
+      background: var(--color-surface-2);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-md);
+      padding: var(--space-3);
+    }
+    .tourbook-score-label {
+      font-size: var(--text-xs);
+      font-weight: 600;
+      color: var(--color-text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      margin-bottom: var(--space-2);
+    }
+    .tourbook-score-stars {
+      display: flex;
+      gap: 4px;
+    }
+    .tourbook-star {
+      width: 28px;
+      height: 28px;
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 0;
+      color: var(--color-border);
+      transition: color 150ms ease, transform 150ms ease;
+    }
+    .tourbook-star:hover { transform: scale(1.15); }
+    .tourbook-star.active { color: #f59e0b; }
+    .tourbook-star svg { width: 24px; height: 24px; }
+
+    /* Overall score display */
+    .tourbook-overall {
+      display: flex;
+      align-items: center;
+      gap: var(--space-3);
+      padding: var(--space-3) var(--space-4);
+      background: linear-gradient(135deg, rgba(244,121,32,0.06), rgba(37,99,235,0.04));
+      border: 1px solid rgba(244,121,32,0.15);
+      border-radius: var(--radius-md);
+      margin-bottom: var(--space-4);
+    }
+    .tourbook-overall-number {
+      font-family: var(--font-display);
+      font-size: var(--text-xl);
+      font-weight: 800;
+      color: var(--color-primary);
+      min-width: 48px;
+      text-align: center;
+    }
+    .tourbook-overall-label {
+      font-size: var(--text-sm);
+      color: var(--color-text-muted);
+    }
+    .tourbook-overall-bar {
+      flex: 1;
+      height: 8px;
+      background: var(--color-border);
+      border-radius: 99px;
+      overflow: hidden;
+    }
+    .tourbook-overall-fill {
+      height: 100%;
+      background: var(--color-primary);
+      border-radius: 99px;
+      transition: width 300ms ease;
+    }
+
+    /* Notes */
+    .tourbook-notes {
+      margin-bottom: var(--space-4);
+    }
+    .tourbook-notes label {
+      display: block;
+      font-size: var(--text-xs);
+      font-weight: 600;
+      color: var(--color-text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      margin-bottom: var(--space-2);
+    }
+    .tourbook-notes textarea {
+      width: 100%;
+      min-height: 100px;
+      padding: var(--space-3);
+      font-family: var(--font-body);
+      font-size: var(--text-sm);
+      color: var(--color-text);
+      background: var(--color-surface-2);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-md);
+      resize: vertical;
+      transition: border-color var(--transition);
+      line-height: 1.6;
+    }
+    .tourbook-notes textarea:focus {
+      outline: none;
+      border-color: var(--color-primary);
+      box-shadow: 0 0 0 3px rgba(244,121,32,0.1);
+    }
+    .tourbook-notes textarea::placeholder {
+      color: var(--color-text-faint);
+    }
+
+    /* Photo upload */
+    .tourbook-photos {
+      margin-bottom: var(--space-3);
+    }
+    .tourbook-photos label {
+      display: block;
+      font-size: var(--text-xs);
+      font-weight: 600;
+      color: var(--color-text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      margin-bottom: var(--space-2);
+    }
+    .tourbook-photo-grid {
+      display: flex;
+      gap: var(--space-2);
+      flex-wrap: wrap;
+    }
+    .tourbook-photo-thumb {
+      width: 80px;
+      height: 80px;
+      border-radius: var(--radius-md);
+      object-fit: cover;
+      border: 1px solid var(--color-border);
+      cursor: pointer;
+      transition: transform 150ms ease;
+    }
+    .tourbook-photo-thumb:hover { transform: scale(1.05); }
+    .tourbook-photo-add {
+      width: 80px;
+      height: 80px;
+      border-radius: var(--radius-md);
+      border: 2px dashed var(--color-border);
+      background: var(--color-surface-2);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      color: var(--color-text-faint);
+      transition: border-color var(--transition), color var(--transition);
+    }
+    .tourbook-photo-add:hover {
+      border-color: var(--color-primary);
+      color: var(--color-primary);
+    }
+    .tourbook-photo-remove {
+      position: absolute;
+      top: -6px;
+      right: -6px;
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      background: #ef4444;
+      color: #fff;
+      border: 2px solid var(--color-surface);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      font-size: 11px;
+      font-weight: 700;
+      opacity: 0;
+      transition: opacity 150ms ease;
+    }
+    .tourbook-photo-wrap {
+      position: relative;
+    }
+    .tourbook-photo-wrap:hover .tourbook-photo-remove {
+      opacity: 1;
+    }
+
+    /* Lightbox */
+    .tourbook-lightbox {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.85);
+      z-index: 9999;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+    }
+    .tourbook-lightbox img {
+      max-width: 90vw;
+      max-height: 90vh;
+      border-radius: var(--radius-lg);
+    }
+
+    /* Summary comparison bar */
+    .tourbook-summary {
+      background: var(--color-surface);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-lg);
+      padding: var(--space-4);
+      margin-bottom: var(--space-4);
+    }
+    .tourbook-summary h3 {
+      font-family: var(--font-display);
+      font-size: var(--text-base);
+      font-weight: 700;
+      margin-bottom: var(--space-3);
+      color: var(--color-text);
+    }
+    .tourbook-rank-list {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-2);
+    }
+    .tourbook-rank-item {
+      display: flex;
+      align-items: center;
+      gap: var(--space-3);
+      padding: var(--space-2) 0;
+    }
+    .tourbook-rank-pos {
+      font-family: var(--font-display);
+      font-size: var(--text-sm);
+      font-weight: 800;
+      color: var(--color-text-faint);
+      min-width: 24px;
+    }
+    .tourbook-rank-name {
+      font-size: var(--text-sm);
+      font-weight: 600;
+      color: var(--color-text);
+      flex: 1;
+    }
+    .tourbook-rank-score {
+      font-family: var(--font-display);
+      font-weight: 700;
+      font-size: var(--text-sm);
+      color: var(--color-primary);
+    }
+    .tourbook-rank-bar-bg {
+      width: 100px;
+      height: 6px;
+      background: var(--color-border);
+      border-radius: 99px;
+      overflow: hidden;
+    }
+    .tourbook-rank-bar-fill {
+      height: 100%;
+      background: var(--color-primary);
+      border-radius: 99px;
+      transition: width 300ms ease;
+    }
+
+    @media (max-width: 600px) {
+      .tourbook-scores {
+        grid-template-columns: repeat(2, 1fr);
+      }
+      .tourbook-card-header {
+        padding: var(--space-3);
+      }
+      .tourbook-card-body {
+        padding: var(--space-3);
+      }
+      .tourbook-overall {
+        flex-wrap: wrap;
+      }
+      .tourbook-overall-bar {
+        width: 100%;
+        flex: none;
+      }
+    }
+
     /* ===== TOP TAB BAR ===== */
     .page-tabs {
       display: flex;
@@ -1662,6 +2065,10 @@ body {
   <button class="page-tab" onclick="switchPageTab('financials')" data-page-tab="financials">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="3" y1="15" x2="21" y2="15"/><line x1="9" y1="3" x2="9" y2="21"/><line x1="15" y1="3" x2="15" y2="21"/></svg>
     Financials
+  </button>
+  <button class="page-tab" onclick="switchPageTab('tourbook')" data-page-tab="tourbook">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/><line x1="12" y1="6" x2="12" y2="13"/><line x1="8" y1="10" x2="16" y2="10"/></svg>
+    Tour Book
   </button>
 </nav>
 
@@ -1975,6 +2382,12 @@ body {
     
 </div>
 
+</div>
+
+<div class="tab-content" id="tab-tourbook">
+  <div class="tourbook-container" id="tourbookContainer">
+    <!-- Populated by JS -->
+  </div>
 </div>
 
 <footer class="footer">
@@ -3861,6 +4274,361 @@ function switchPageTab(tabId) {
   if (tabId === 'map' && typeof map !== 'undefined') {
     setTimeout(() => map.invalidateSize(), 100);
   }
+  // Refresh tour book when switching to it
+  if (tabId === 'tourbook') {
+    renderTourBook();
+  }
+}
+
+// ============================================================
+// Tour Book Feature
+// ============================================================
+
+const TOURBOOK_KEY = 'sf-office-tourbook';
+const TOURBOOK_PHOTOS_KEY = 'sf-office-tourbook-photos';
+
+const SCORE_CATEGORIES = [
+  { id: 'location', label: 'Location', icon: '📍' },
+  { id: 'parking', label: 'Parking', icon: '🅿️' },
+  { id: 'security', label: 'Security', icon: '🔒' },
+  { id: 'interior', label: 'Interior Fit Out', icon: '🏗️' },
+  { id: 'furniture', label: 'Furniture / Vibe', icon: '🪑' },
+  { id: 'natural_light', label: 'Natural Light', icon: '☀️' },
+  { id: 'amenities', label: 'Amenities', icon: '🏪' },
+  { id: 'overall_feel', label: 'Overall Feel', icon: '✨' }
+];
+
+function getTourBookData() {
+  try {
+    return JSON.parse(localStorage.getItem(TOURBOOK_KEY)) || {};
+  } catch(e) { return {}; }
+}
+
+function saveTourBookData(data) {
+  localStorage.setItem(TOURBOOK_KEY, JSON.stringify(data));
+}
+
+function getTourBookPhotos() {
+  try {
+    return JSON.parse(localStorage.getItem(TOURBOOK_PHOTOS_KEY)) || {};
+  } catch(e) { return {}; }
+}
+
+function saveTourBookPhotos(photos) {
+  localStorage.setItem(TOURBOOK_PHOTOS_KEY, JSON.stringify(photos));
+}
+
+function getBuildingKey(item) {
+  return item.type + '-' + item.id;
+}
+
+function starSVG() {
+  return '<svg viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>';
+}
+
+function setScore(buildingKey, category, score) {
+  const data = getTourBookData();
+  if (!data[buildingKey]) data[buildingKey] = { scores: {}, notes: '' };
+  data[buildingKey].scores[category] = score;
+  saveTourBookData(data);
+  // Re-render just the overall score and ranking
+  updateOverallScore(buildingKey);
+  updateRankingSummary();
+}
+
+function setNotes(buildingKey, notes) {
+  const data = getTourBookData();
+  if (!data[buildingKey]) data[buildingKey] = { scores: {}, notes: '' };
+  data[buildingKey].notes = notes;
+  saveTourBookData(data);
+}
+
+function getOverallScore(buildingKey) {
+  const data = getTourBookData();
+  const entry = data[buildingKey];
+  if (!entry || !entry.scores) return 0;
+  const scores = Object.values(entry.scores).filter(s => s > 0);
+  if (scores.length === 0) return 0;
+  return scores.reduce((a, b) => a + b, 0) / scores.length;
+}
+
+function updateOverallScore(buildingKey) {
+  const avg = getOverallScore(buildingKey);
+  const el = document.getElementById('overall-' + buildingKey);
+  if (!el) return;
+  const numEl = el.querySelector('.tourbook-overall-number');
+  const fillEl = el.querySelector('.tourbook-overall-fill');
+  const labelEl = el.querySelector('.tourbook-overall-label');
+  if (numEl) numEl.textContent = avg > 0 ? avg.toFixed(1) : '-';
+  if (fillEl) fillEl.style.width = (avg / 5 * 100) + '%';
+  if (labelEl) {
+    if (avg === 0) labelEl.textContent = 'No scores yet';
+    else if (avg >= 4.5) labelEl.textContent = 'Excellent';
+    else if (avg >= 3.5) labelEl.textContent = 'Strong contender';
+    else if (avg >= 2.5) labelEl.textContent = 'Decent option';
+    else if (avg >= 1.5) labelEl.textContent = 'Below average';
+    else labelEl.textContent = 'Poor fit';
+  }
+}
+
+function handlePhotoUpload(buildingKey, input) {
+  const files = input.files;
+  if (!files.length) return;
+  const photos = getTourBookPhotos();
+  if (!photos[buildingKey]) photos[buildingKey] = [];
+  
+  let loaded = 0;
+  const total = Math.min(files.length, 10 - photos[buildingKey].length); // Max 10 photos per building
+  
+  for (let i = 0; i < total; i++) {
+    const reader = new FileReader();
+    reader.onload = function(e) {
+      photos[buildingKey].push(e.target.result);
+      loaded++;
+      if (loaded === total) {
+        saveTourBookPhotos(photos);
+        renderPhotoGrid(buildingKey);
+      }
+    };
+    reader.readAsDataURL(files[i]);
+  }
+}
+
+function removePhoto(buildingKey, index) {
+  const photos = getTourBookPhotos();
+  if (photos[buildingKey]) {
+    photos[buildingKey].splice(index, 1);
+    saveTourBookPhotos(photos);
+    renderPhotoGrid(buildingKey);
+  }
+}
+
+function openLightbox(src) {
+  const lb = document.createElement('div');
+  lb.className = 'tourbook-lightbox';
+  lb.onclick = () => lb.remove();
+  lb.innerHTML = '<img src="' + src + '">';
+  document.body.appendChild(lb);
+}
+
+function renderPhotoGrid(buildingKey) {
+  const grid = document.getElementById('photos-' + buildingKey);
+  if (!grid) return;
+  const photos = getTourBookPhotos();
+  const items = photos[buildingKey] || [];
+  
+  grid.innerHTML = items.map((src, i) => 
+    '<div class="tourbook-photo-wrap">' +
+      '<img class="tourbook-photo-thumb" src="' + src + '" onclick="openLightbox(this.src)">' +
+      '<button class="tourbook-photo-remove" onclick="event.stopPropagation(); removePhoto(\'' + buildingKey + '\', ' + i + ')">x</button>' +
+    '</div>'
+  ).join('') +
+  (items.length < 10 ? 
+    '<label class="tourbook-photo-add">' +
+      '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>' +
+      '<input type="file" accept="image/*" multiple style="display:none" onchange="handlePhotoUpload(\'' + buildingKey + '\', this)">' +
+    '</label>' : '');
+}
+
+function updateRankingSummary() {
+  const container = document.getElementById('tourbook-ranking');
+  if (!container) return;
+  
+  const list = getTourList();
+  if (list.length < 2) {
+    container.style.display = 'none';
+    return;
+  }
+  
+  const ranked = list.map(item => {
+    const key = getBuildingKey(item);
+    return { name: item.name, score: getOverallScore(key), color: item.color || '#9ca3af' };
+  }).sort((a, b) => b.score - a.score);
+  
+  const hasScores = ranked.some(r => r.score > 0);
+  if (!hasScores) {
+    container.style.display = 'none';
+    return;
+  }
+  
+  container.style.display = 'block';
+  container.innerHTML = 
+    '<h3>Tour Ranking</h3>' +
+    '<div class="tourbook-rank-list">' +
+    ranked.map((r, i) => 
+      '<div class="tourbook-rank-item">' +
+        '<span class="tourbook-rank-pos">#' + (i + 1) + '</span>' +
+        '<span style="width:10px;height:10px;border-radius:50%;background:' + r.color + ';flex-shrink:0;"></span>' +
+        '<span class="tourbook-rank-name">' + r.name + '</span>' +
+        '<span class="tourbook-rank-score">' + (r.score > 0 ? r.score.toFixed(1) : '-') + '</span>' +
+        '<div class="tourbook-rank-bar-bg"><div class="tourbook-rank-bar-fill" style="width:' + (r.score / 5 * 100) + '%"></div></div>' +
+      '</div>'
+    ).join('') +
+    '</div>';
+}
+
+function renderTourBook() {
+  const container = document.getElementById('tourbookContainer');
+  const list = getTourList();
+  const data = getTourBookData();
+  
+  if (list.length === 0) {
+    container.innerHTML = 
+      '<div class="tourbook-empty">' +
+        '<svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>' +
+        '<p><strong>No buildings on your tour list</strong><br>Add buildings from the Map tab to start building your tour book.</p>' +
+      '</div>';
+    return;
+  }
+  
+  let html = 
+    '<div class="tourbook-header">' +
+      '<div><h2>Tour Book</h2><span>' + list.length + ' location' + (list.length !== 1 ? 's' : '') + ' on tour</span></div>' +
+      '<button class="tourbook-export-btn" onclick="exportTourBook()">' +
+        '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>' +
+        'Export Tour Book' +
+      '</button>' +
+    '</div>';
+  
+  // Ranking summary (only shows if 2+ buildings have scores)
+  html += '<div class="tourbook-summary" id="tourbook-ranking" style="display:none;"></div>';
+  
+  // Building cards
+  list.forEach((item, idx) => {
+    const key = getBuildingKey(item);
+    const entry = data[key] || { scores: {}, notes: '' };
+    const avg = getOverallScore(key);
+    const isFirst = idx === 0;
+    
+    html += 
+      '<div class="tourbook-card' + (isFirst ? ' expanded' : '') + '" id="tb-card-' + key + '">' +
+        '<div class="tourbook-card-header" onclick="toggleTourBookCard(\'' + key + '\')">' +
+          '<div class="tourbook-card-dot" style="background:' + (item.color || '#9ca3af') + '"></div>' +
+          '<div style="flex:1;">' +
+            '<div class="tourbook-card-title">' + item.name + '</div>' +
+            '<div class="tourbook-card-meta">' + (item.meta || item.address || '') + '</div>' +
+            (item.tags && item.tags.length ? 
+              '<div class="tourbook-card-tags">' + item.tags.map(t => '<span class="tourbook-card-tag">' + t + '</span>').join('') + '</div>' : '') +
+          '</div>' +
+          '<div style="text-align:right;min-width:50px;">' +
+            '<div style="font-family:var(--font-display);font-weight:800;font-size:var(--text-lg);color:' + (avg > 0 ? 'var(--color-primary)' : 'var(--color-text-faint)') + ';">' + (avg > 0 ? avg.toFixed(1) : '-') + '</div>' +
+            '<div style="font-size:0.6rem;color:var(--color-text-faint);text-transform:uppercase;letter-spacing:0.05em;">Score</div>' +
+          '</div>' +
+          '<svg class="tourbook-card-chevron" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>' +
+        '</div>' +
+        '<div class="tourbook-card-body">' +
+          // Overall score bar
+          '<div class="tourbook-overall" id="overall-' + key + '">' +
+            '<div class="tourbook-overall-number">' + (avg > 0 ? avg.toFixed(1) : '-') + '</div>' +
+            '<div style="flex:1;">' +
+              '<div class="tourbook-overall-label">' + (avg === 0 ? 'No scores yet' : avg >= 4.5 ? 'Excellent' : avg >= 3.5 ? 'Strong contender' : avg >= 2.5 ? 'Decent option' : avg >= 1.5 ? 'Below average' : 'Poor fit') + '</div>' +
+              '<div class="tourbook-overall-bar"><div class="tourbook-overall-fill" style="width:' + (avg / 5 * 100) + '%"></div></div>' +
+            '</div>' +
+          '</div>' +
+          // Score categories
+          '<div class="tourbook-scores">';
+    
+    SCORE_CATEGORIES.forEach(cat => {
+      const score = entry.scores[cat.id] || 0;
+      html += 
+        '<div class="tourbook-score-item">' +
+          '<div class="tourbook-score-label">' + cat.icon + ' ' + cat.label + '</div>' +
+          '<div class="tourbook-score-stars">';
+      for (let s = 1; s <= 5; s++) {
+        html += '<button class="tourbook-star' + (s <= score ? ' active' : '') + '" onclick="setScore(\'' + key + '\', \'' + cat.id + '\', ' + s + '); renderTourBook();">' + starSVG() + '</button>';
+      }
+      html += '</div></div>';
+    });
+    
+    html += '</div>'; // end scores grid
+    
+    // Notes
+    html += 
+      '<div class="tourbook-notes">' +
+        '<label>Tour Notes</label>' +
+        '<textarea id="notes-' + key + '" placeholder="Walk-through observations, questions for landlord, team feedback..." oninput="setNotes(\'' + key + '\', this.value)">' + (entry.notes || '') + '</textarea>' +
+      '</div>';
+    
+    // Photos
+    html += 
+      '<div class="tourbook-photos">' +
+        '<label>Photos</label>' +
+        '<div class="tourbook-photo-grid" id="photos-' + key + '">' +
+          '<label class="tourbook-photo-add">' +
+            '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>' +
+            '<input type="file" accept="image/*" multiple style="display:none" onchange="handlePhotoUpload(\'' + key + '\', this)">' +
+          '</label>' +
+        '</div>' +
+      '</div>';
+    
+    html += '</div></div>'; // end body, end card
+  });
+  
+  container.innerHTML = html;
+  
+  // Render photos for each building
+  list.forEach(item => {
+    renderPhotoGrid(getBuildingKey(item));
+  });
+  
+  // Render ranking
+  updateRankingSummary();
+}
+
+function toggleTourBookCard(key) {
+  const card = document.getElementById('tb-card-' + key);
+  if (card) card.classList.toggle('expanded');
+}
+
+function exportTourBook() {
+  const list = getTourList();
+  const data = getTourBookData();
+  
+  let text = 'TOUR BOOK - SF Office Search\n';
+  text += 'Generated: ' + new Date().toLocaleDateString() + '\n';
+  text += '='.repeat(50) + '\n\n';
+  
+  list.forEach((item, idx) => {
+    const key = getBuildingKey(item);
+    const entry = data[key] || { scores: {}, notes: '' };
+    const avg = getOverallScore(key);
+    
+    text += (idx + 1) + '. ' + item.name + '\n';
+    text += '   ' + (item.meta || '') + '\n';
+    text += '   Overall Score: ' + (avg > 0 ? avg.toFixed(1) + '/5.0' : 'Not scored') + '\n';
+    text += '   ' + '-'.repeat(40) + '\n';
+    
+    SCORE_CATEGORIES.forEach(cat => {
+      const score = entry.scores[cat.id] || 0;
+      text += '   ' + cat.label + ': ' + (score > 0 ? '★'.repeat(score) + '☆'.repeat(5 - score) + ' (' + score + '/5)' : 'Not rated') + '\n';
+    });
+    
+    if (entry.notes) {
+      text += '\n   Notes:\n   ' + entry.notes.replace(/\n/g, '\n   ') + '\n';
+    }
+    text += '\n';
+  });
+  
+  // Ranking
+  const ranked = list.map(item => {
+    const key = getBuildingKey(item);
+    return { name: item.name, score: getOverallScore(key) };
+  }).filter(r => r.score > 0).sort((a, b) => b.score - a.score);
+  
+  if (ranked.length > 0) {
+    text += '\nRANKING\n' + '='.repeat(50) + '\n';
+    ranked.forEach((r, i) => {
+      text += '#' + (i + 1) + ' ' + r.name + ' - ' + r.score.toFixed(1) + '/5.0\n';
+    });
+  }
+  
+  const blob = new Blob([text], { type: 'text/plain' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'tour-book-' + new Date().toISOString().slice(0, 10) + '.txt';
+  a.click();
+  URL.revokeObjectURL(url);
 }
 
 // ===== FINANCIAL SHEET TAB SWITCHING =====
