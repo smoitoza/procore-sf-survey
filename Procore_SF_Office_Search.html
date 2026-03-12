@@ -1331,6 +1331,56 @@ body {
       }
     }
 
+
+    /* ===== FLOOR TABLE IN SURVEY TOOLTIPS ===== */
+    .survey-floor-section {
+      margin-top: var(--space-3);
+      border-top: 1px solid var(--color-divider);
+      padding-top: var(--space-3);
+    }
+    .survey-floor-label {
+      font-size: 0.65rem; font-weight: 600; text-transform: uppercase;
+      letter-spacing: 0.06em; color: var(--color-text-faint);
+      margin-bottom: var(--space-2);
+    }
+    .survey-floor-table {
+      width: 100%; border-collapse: collapse; font-size: 0.75rem;
+    }
+    .survey-floor-table th {
+      font-size: 0.65rem; font-weight: 600; text-transform: uppercase;
+      letter-spacing: 0.04em; color: var(--color-text-faint);
+      padding: 4px 6px; text-align: left;
+      border-bottom: 1px solid var(--color-divider);
+    }
+    .survey-floor-table td {
+      padding: 5px 6px; color: var(--color-text);
+      border-bottom: 1px solid var(--color-divider);
+      font-variant-numeric: tabular-nums;
+    }
+    .survey-floor-table tr:last-child td { border-bottom: none; }
+    .survey-floor-table .floor-rate {
+      font-weight: 600; color: var(--color-primary);
+    }
+    .survey-floor-table .floor-avail {
+      font-size: 0.7rem;
+    }
+    .survey-floor-table .floor-avail-now {
+      color: #059669; font-weight: 500;
+    }
+    .survey-floor-table .floor-avail-future {
+      color: #d97706; font-weight: 500;
+    }
+    .survey-floor-type-badge {
+      display: inline-block; font-size: 0.6rem; font-weight: 600;
+      padding: 1px 5px; border-radius: 3px;
+    }
+    .survey-floor-type-badge.direct {
+      background: rgba(37,99,235,0.08); color: #2563eb;
+    }
+    .survey-floor-type-badge.sublease {
+      background: rgba(217,119,6,0.08); color: #d97706;
+    }
+
 </style>
 </head>
 <body>
@@ -1909,6 +1959,601 @@ BUILDINGS.forEach((b) => {
 const PDF_PAGES = {"1": 3, "2": 6, "3": 9, "4": 16, "5": 19, "6": 23, "7": 26, "8": 30, "9": 33, "10": 40, "11": 44, "12": 48, "13": 51, "14": 54, "15": 58, "16": 63, "17": 71, "18": 73, "19": 78, "20": 81, "21": 84, "22": 89, "23": 92, "24": 97, "25": 100, "26": 103, "27": 108, "28": 111, "29": 114, "30": 117, "31": 120, "32": 123, "33": 126};
 const PDF_FILE = "https://smoitoza.github.io/procore-sf-survey/survey-120dpi.pdf";
 
+const FLOOR_DATA = {
+  "1": {
+    "floors": [
+      {
+        "floor": "3",
+        "sqft": "14,485",
+        "rate": "Mid $80's FSG",
+        "term": "Negotiable",
+        "availability": "Immediate",
+        "type": "Direct",
+        "tis": "Negotiable"
+      }
+    ]
+  },
+  "2": {
+    "floors": [
+      {
+        "floor": "5",
+        "sqft": "13,211",
+        "rate": "Upper $70's FSG",
+        "term": "Negotiable",
+        "availability": "Immediate",
+        "type": "Direct",
+        "tis": "Negotiable"
+      }
+    ]
+  },
+  "3": {
+    "floors": [
+      {
+        "floor": "4",
+        "sqft": "16,111",
+        "rate": "Mid $60's FSG",
+        "term": "Negotiable",
+        "availability": "Sept 2026",
+        "type": "Direct",
+        "tis": "Negotiable"
+      },
+      {
+        "floor": "6",
+        "sqft": "16,117",
+        "rate": "Mid $60's FSG",
+        "term": "Negotiable",
+        "availability": "Sept 2026",
+        "type": "Direct",
+        "tis": "Negotiable"
+      },
+      {
+        "floor": "8",
+        "sqft": "16,886",
+        "rate": "Mid $60's FSG",
+        "term": "Negotiable",
+        "availability": "Immediate",
+        "type": "Direct",
+        "tis": "Negotiable"
+      }
+    ]
+  },
+  "4": {
+    "floors": [
+      {
+        "floor": "3",
+        "sqft": "14,414",
+        "rate": "Mid $60's FSG",
+        "term": "Negotiable",
+        "availability": "Immediate",
+        "type": "Direct",
+        "tis": "Negotiable"
+      }
+    ]
+  },
+  "5": {
+    "floors": [
+      {
+        "floor": "8",
+        "sqft": "12,620",
+        "rate": "High $80's NOE",
+        "term": "Negotiable",
+        "availability": "Immediate",
+        "type": "Direct",
+        "tis": "Negotiable"
+      },
+      {
+        "floor": "9",
+        "sqft": "4,373",
+        "rate": "High $80's NOE",
+        "term": "Negotiable",
+        "availability": "Immediate",
+        "type": "Direct",
+        "tis": "Negotiable"
+      }
+    ]
+  },
+  "6": {
+    "floors": [
+      {
+        "floor": "23",
+        "sqft": "12,702",
+        "rate": "Mid $70's FSG",
+        "term": "Thru Dec 2027",
+        "availability": "Immediate",
+        "type": "Sublease",
+        "tis": "Negotiable"
+      }
+    ]
+  },
+  "7": {
+    "floors": [
+      {
+        "floor": "Ground",
+        "sqft": "16,142",
+        "rate": "Mid $60's FSG",
+        "term": "Negotiable",
+        "availability": "Immediate",
+        "type": "Direct",
+        "tis": "Negotiable"
+      },
+      {
+        "floor": "2",
+        "sqft": "8,052",
+        "rate": "Mid $60's FSG",
+        "term": "Negotiable",
+        "availability": "Immediate",
+        "type": "Direct",
+        "tis": "Negotiable"
+      }
+    ]
+  },
+  "8": {
+    "floors": [
+      {
+        "floor": "2",
+        "sqft": "7,000-13,800",
+        "rate": "Low $40's NNN",
+        "term": "Negotiable",
+        "availability": "Immediate",
+        "type": "Direct",
+        "tis": "Negotiable"
+      }
+    ]
+  },
+  "9": {
+    "floors": [
+      {
+        "floor": "1",
+        "sqft": "16,600",
+        "rate": "Upper $30's FSG",
+        "term": "Negotiable",
+        "availability": "Immediate",
+        "type": "Direct",
+        "tis": "Negotiable"
+      },
+      {
+        "floor": "2",
+        "sqft": "16,600",
+        "rate": "Upper $30's FSG",
+        "term": "Negotiable",
+        "availability": "Immediate",
+        "type": "Direct",
+        "tis": "Negotiable"
+      },
+      {
+        "floor": "3",
+        "sqft": "16,600",
+        "rate": "Upper $30's FSG",
+        "term": "Negotiable",
+        "availability": "Immediate",
+        "type": "Direct",
+        "tis": "Negotiable"
+      }
+    ]
+  },
+  "10": {
+    "floors": [
+      {
+        "floor": "10 Suite 1000",
+        "sqft": "15,587",
+        "rate": "Upper $70's FSG",
+        "term": "Negotiable",
+        "availability": "Immediate",
+        "type": "Direct",
+        "tis": "Negotiable"
+      },
+      {
+        "floor": "10 Suite 1050",
+        "sqft": "15,304",
+        "rate": "Upper $70's FSG",
+        "term": "Negotiable",
+        "availability": "Immediate",
+        "type": "Direct",
+        "tis": "Negotiable"
+      }
+    ]
+  },
+  "11": {
+    "floors": [
+      {
+        "floor": "3-16",
+        "sqft": "10,443-16,392",
+        "rate": "Mid $60's FSG",
+        "term": "Negotiable",
+        "availability": "Immediate",
+        "type": "Direct",
+        "tis": "Negotiable"
+      }
+    ]
+  },
+  "12": {
+    "floors": [
+      {
+        "floor": "Full Building",
+        "sqft": "14,250",
+        "rate": "High $60's iG",
+        "term": "Negotiable",
+        "availability": "Immediate",
+        "type": "Direct",
+        "tis": "Negotiable"
+      }
+    ]
+  },
+  "13": {
+    "floors": [
+      {
+        "floor": "3 Suite B",
+        "sqft": "16,000",
+        "rate": "High $40's NOJ",
+        "term": "Thru Nov 2031",
+        "availability": "Immediate",
+        "type": "Direct",
+        "tis": "Negotiable"
+      }
+    ]
+  },
+  "14": {
+    "floors": [
+      {
+        "floor": "4 Suite 425",
+        "sqft": "16,029",
+        "rate": "Mid $60's FSG",
+        "term": "Negotiable",
+        "availability": "May 2026",
+        "type": "Direct",
+        "tis": "Negotiable"
+      },
+      {
+        "floor": "5 Suite 475",
+        "sqft": "10,931",
+        "rate": "Mid $60's FSG",
+        "term": "Negotiable",
+        "availability": "May 2026",
+        "type": "Direct",
+        "tis": "Negotiable"
+      }
+    ]
+  },
+  "15": {
+    "floors": [
+      {
+        "floor": "2 Suite 203",
+        "sqft": "3,625",
+        "rate": "$45.00 IG",
+        "term": "Negotiable",
+        "availability": "Immediate",
+        "type": "Direct",
+        "tis": "Negotiable"
+      },
+      {
+        "floor": "2 Suite 204",
+        "sqft": "8,323",
+        "rate": "$45.00 IG",
+        "term": "Negotiable",
+        "availability": "Immediate",
+        "type": "Direct",
+        "tis": "Negotiable"
+      },
+      {
+        "floor": "4 A or B",
+        "sqft": "7,014-21,690",
+        "rate": "$65.00 IG",
+        "term": "Negotiable",
+        "availability": "Immediate",
+        "type": "Direct",
+        "tis": "Negotiable"
+      }
+    ]
+  },
+  "16": {
+    "floors": [
+      {
+        "floor": "1",
+        "sqft": "11,504",
+        "rate": "Mid-High $50's IG",
+        "term": "Negotiable",
+        "availability": "Immediate",
+        "type": "Sublease",
+        "tis": "Negotiable"
+      },
+      {
+        "floor": "2-6",
+        "sqft": "14,266",
+        "rate": "Mid-High $50's IG",
+        "term": "Negotiable",
+        "availability": "Immediate",
+        "type": "Sublease",
+        "tis": "Negotiable"
+      }
+    ]
+  },
+  "17": {
+    "floors": [
+      {
+        "floor": "5",
+        "sqft": "15,142",
+        "rate": "$45 IG",
+        "term": "Negotiable",
+        "availability": "Immediate",
+        "type": "Direct",
+        "tis": "Negotiable"
+      }
+    ]
+  },
+  "18": {
+    "floors": [
+      {
+        "floor": "1",
+        "sqft": "11,264",
+        "rate": "Low $60's IG",
+        "term": "Negotiable",
+        "availability": "Immediate",
+        "type": "Direct",
+        "tis": "Negotiable"
+      },
+      {
+        "floor": "4",
+        "sqft": "13,124",
+        "rate": "Low $60's IG",
+        "term": "Negotiable",
+        "availability": "Immediate",
+        "type": "Direct",
+        "tis": "Negotiable"
+      }
+    ]
+  },
+  "19": {
+    "floors": [
+      {
+        "floor": "2",
+        "sqft": "15,000",
+        "rate": "Deal Pending",
+        "term": "Negotiable",
+        "availability": "Immediate",
+        "type": "Sublease",
+        "tis": "Negotiable"
+      }
+    ]
+  },
+  "20": {
+    "floors": [
+      {
+        "floor": "3",
+        "sqft": "10,980",
+        "rate": "High $60's IG",
+        "term": "Negotiable",
+        "availability": "Immediate",
+        "type": "Direct",
+        "tis": "Negotiable"
+      }
+    ]
+  },
+  "21": {
+    "floors": [
+      {
+        "floor": "2",
+        "sqft": "16,778",
+        "rate": "Low $30's IG",
+        "term": "Thru Sept 2029",
+        "availability": "Immediate",
+        "type": "Sublease",
+        "tis": "Negotiable"
+      },
+      {
+        "floor": "3",
+        "sqft": "15,300-23,000",
+        "rate": "High $60's IG",
+        "term": "Negotiable",
+        "availability": "Immediate",
+        "type": "Direct",
+        "tis": "Negotiable"
+      }
+    ]
+  },
+  "22": {
+    "floors": [
+      {
+        "floor": "4",
+        "sqft": "10,250",
+        "rate": "Negotiable",
+        "term": "Negotiable",
+        "availability": "Immediate",
+        "type": "Direct",
+        "tis": "Negotiable"
+      },
+      {
+        "floor": "5",
+        "sqft": "10,250",
+        "rate": "Negotiable",
+        "term": "Negotiable",
+        "availability": "Immediate",
+        "type": "Direct",
+        "tis": "Negotiable"
+      }
+    ]
+  },
+  "23": {
+    "floors": [
+      {
+        "floor": "1",
+        "sqft": "4,598",
+        "rate": "High $30's FSG",
+        "term": "Thru April 2027",
+        "availability": "Immediate",
+        "type": "Sublease",
+        "tis": "Negotiable"
+      },
+      {
+        "floor": "Mezzanine",
+        "sqft": "4,130",
+        "rate": "High $30's FSG",
+        "term": "Negotiable",
+        "availability": "Immediate",
+        "type": "Direct",
+        "tis": "Negotiable"
+      },
+      {
+        "floor": "2",
+        "sqft": "11,052",
+        "rate": "High $30's FSG",
+        "term": "Negotiable",
+        "availability": "Immediate",
+        "type": "Direct",
+        "tis": "Negotiable"
+      }
+    ]
+  },
+  "24": {
+    "floors": [
+      {
+        "floor": "2",
+        "sqft": "12,602",
+        "rate": "Mid $30's IG",
+        "term": "Negotiable",
+        "availability": "Immediate",
+        "type": "Direct",
+        "tis": "Negotiable"
+      }
+    ]
+  },
+  "25": {
+    "floors": [
+      {
+        "floor": "2",
+        "sqft": "15,000-20,467",
+        "rate": "Mid $30s IG",
+        "term": "Negotiable",
+        "availability": "Immediate",
+        "type": "Direct",
+        "tis": "Negotiable"
+      }
+    ]
+  },
+  "26": {
+    "floors": [
+      {
+        "floor": "3",
+        "sqft": "15,257",
+        "rate": "$50's IG",
+        "term": "Negotiable",
+        "availability": "Immediate",
+        "type": "Direct",
+        "tis": "Negotiable"
+      },
+      {
+        "floor": "4",
+        "sqft": "15,075",
+        "rate": "$50's IG",
+        "term": "Negotiable",
+        "availability": "Immediate",
+        "type": "Direct",
+        "tis": "Negotiable"
+      }
+    ]
+  },
+  "27": {
+    "floors": [
+      {
+        "floor": "2",
+        "sqft": "11,000",
+        "rate": "$100-110",
+        "term": "Negotiable",
+        "availability": "March 2026",
+        "type": "Direct",
+        "tis": "Negotiable"
+      }
+    ]
+  },
+  "28": {
+    "floors": [
+      {
+        "floor": "3",
+        "sqft": "10,388",
+        "rate": "Mid $50's IG",
+        "term": "Negotiable",
+        "availability": "Immediate",
+        "type": "Direct",
+        "tis": "Negotiable"
+      }
+    ]
+  },
+  "29": {
+    "floors": [
+      {
+        "floor": "2",
+        "sqft": "14,500-29,000",
+        "rate": "Negotiable",
+        "term": "Negotiable",
+        "availability": "Immediate",
+        "type": "Direct",
+        "tis": "Negotiable"
+      }
+    ]
+  },
+  "30": {
+    "floors": [
+      {
+        "floor": "1",
+        "sqft": "15,238",
+        "rate": "Upper $60's IG",
+        "term": "Negotiable",
+        "availability": "Immediate",
+        "type": "Direct",
+        "tis": "Negotiable"
+      }
+    ]
+  },
+  "31": {
+    "floors": [
+      {
+        "floor": "4",
+        "sqft": "14,323",
+        "rate": "Negotiable",
+        "term": "Negotiable",
+        "availability": "Immediate",
+        "type": "Sublease",
+        "tis": "Negotiable"
+      }
+    ]
+  },
+  "32": {
+    "floors": [
+      {
+        "floor": "5",
+        "sqft": "15,241",
+        "rate": "Negotiable",
+        "term": "2-3 Years",
+        "availability": "Immediate",
+        "type": "Direct",
+        "tis": "Negotiable"
+      }
+    ]
+  },
+  "33": {
+    "floors": [
+      {
+        "floor": "3 Suite 310",
+        "sqft": "12,083",
+        "rate": "Mid $40's",
+        "term": "Negotiable",
+        "availability": "May 2026",
+        "type": "Direct",
+        "tis": "Negotiable"
+      },
+      {
+        "floor": "3 Suite 316",
+        "sqft": "14,092",
+        "rate": "Mid $40's",
+        "term": "Negotiable",
+        "availability": "Immediate",
+        "type": "Direct",
+        "tis": "Negotiable"
+      }
+    ]
+  }
+};
+
+
 const SURVEY_BUILDINGS = [
   {
     num: 1,
@@ -2319,6 +2964,32 @@ const SURVEY_BUILDINGS = [
 ];
 
 function buildSurveyPopup(b) {
+  // Build floor table if data exists
+  const floorInfo = FLOOR_DATA[b.num];
+  let floorHTML = '';
+  if (floorInfo && floorInfo.floors && floorInfo.floors.length > 0) {
+    const rows = floorInfo.floors.map(f => {
+      const availClass = f.availability === 'Immediate' ? 'floor-avail-now' : 'floor-avail-future';
+      const typeClass = f.type.toLowerCase() === 'sublease' ? 'sublease' : 'direct';
+      return `<tr>
+        <td>${f.floor}</td>
+        <td>${f.sqft} SF</td>
+        <td class="floor-rate">${f.rate}</td>
+        <td class="floor-avail ${availClass}">${f.availability}</td>
+        <td><span class="survey-floor-type-badge ${typeClass}">${f.type}</span></td>
+      </tr>`;
+    }).join('');
+    floorHTML = `
+      <div class="survey-floor-section">
+        <div class="survey-floor-label">Available Floors</div>
+        <table class="survey-floor-table">
+          <thead><tr><th>Floor</th><th>Size</th><th>Rate</th><th>Avail</th><th>Type</th></tr></thead>
+          <tbody>${rows}</tbody>
+        </table>
+      </div>
+    `;
+  }
+
   return `
     <div class="survey-tooltip">
       <div class="survey-tooltip-bar"></div>
@@ -2347,15 +3018,8 @@ function buildSurveyPopup(b) {
             <span class="survey-tooltip-field-label">Available</span>
             <span class="survey-tooltip-field-value">${b.spaceAvailable}</span>
           </div>
-          <div class="survey-tooltip-field">
-            <span class="survey-tooltip-field-label">Asking Rate</span>
-            <span class="survey-tooltip-field-value">${b.rentalRate}</span>
-          </div>
-          <div class="survey-tooltip-field">
-            <span class="survey-tooltip-field-label">Type</span>
-            <span class="survey-tooltip-field-value">${b.directSublease}</span>
-          </div>
         </div>
+        ${floorHTML}
         <button class="tooltip-tour-btn" onclick="toggleTourItem('survey', ${b.num})" id="tour-btn-survey-${b.num}">
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
           <span>Add to Tour List</span>
@@ -2379,8 +3043,8 @@ SURVEY_BUILDINGS.forEach((b) => {
 
   marker.bindPopup(buildSurveyPopup(b), {
     className: 'survey-popup-wrapper',
-    maxWidth: 340,
-    minWidth: 260,
+    maxWidth: 420,
+    minWidth: 320,
     closeButton: true,
     autoPan: true,
     autoPanPadding: [20, 20],
