@@ -1162,9 +1162,207 @@ body {
   line-height: 1.2;
 }
 
+
+    /* ===== TOUR LIST PANEL ===== */
+    .tour-panel {
+      position: fixed; top: 0; right: 0; width: 380px; height: 100vh;
+      background: var(--color-surface); border-left: 1px solid var(--color-border);
+      box-shadow: -8px 0 30px rgba(0,0,0,0.08);
+      z-index: 10000; display: flex; flex-direction: column;
+      transform: translateX(100%); transition: transform 0.3s cubic-bezier(0.4,0,0.2,1);
+      font-family: var(--font-body);
+    }
+    .tour-panel.open { transform: translateX(0); }
+
+    .tour-panel-header {
+      padding: var(--space-4) var(--space-5);
+      border-bottom: 1px solid var(--color-border);
+      display: flex; align-items: center; justify-content: space-between;
+      background: var(--color-surface-2); flex-shrink: 0;
+    }
+    .tour-panel-title {
+      font-family: var(--font-display); font-size: var(--text-lg);
+      font-weight: 700; color: var(--color-text);
+      display: flex; align-items: center; gap: var(--space-2);
+    }
+    .tour-panel-count {
+      display: inline-flex; align-items: center; justify-content: center;
+      min-width: 22px; height: 22px; padding: 0 6px;
+      border-radius: 11px; background: var(--color-primary);
+      color: #fff; font-size: 0.75rem; font-weight: 600;
+    }
+    .tour-panel-close {
+      background: none; border: none; cursor: pointer;
+      color: var(--color-text-muted); padding: var(--space-1); border-radius: 6px;
+      display: flex; align-items: center; justify-content: center;
+      transition: all 0.15s ease;
+    }
+    .tour-panel-close:hover { background: var(--color-bg); color: var(--color-text); }
+
+    .tour-panel-body {
+      flex: 1; overflow-y: auto; padding: var(--space-4) var(--space-5);
+    }
+    .tour-panel-empty {
+      text-align: center; padding: var(--space-8) var(--space-4);
+      color: var(--color-text-faint);
+    }
+    .tour-panel-empty svg { margin-bottom: var(--space-3); opacity: 0.4; }
+    .tour-panel-empty p {
+      font-size: var(--text-sm); line-height: 1.5; margin: 0;
+    }
+    .tour-panel-empty p strong {
+      display: block; font-size: var(--text-base); color: var(--color-text-muted);
+      margin-bottom: var(--space-1);
+    }
+
+    .tour-item {
+      background: var(--color-surface-2); border: 1px solid var(--color-border);
+      border-radius: 10px; padding: var(--space-3) var(--space-4);
+      margin-bottom: var(--space-3);
+      display: flex; align-items: flex-start; gap: var(--space-3);
+      transition: all 0.15s ease; position: relative;
+    }
+    .tour-item:hover { border-color: var(--color-primary); }
+    .tour-item-dot {
+      width: 10px; height: 10px; border-radius: 50%; margin-top: 4px; flex-shrink: 0;
+    }
+    .tour-item-info { flex: 1; min-width: 0; }
+    .tour-item-name {
+      font-weight: 600; font-size: var(--text-sm); color: var(--color-text);
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
+    .tour-item-meta {
+      font-size: var(--text-xs); color: var(--color-text-muted); margin-top: 2px;
+    }
+    .tour-item-tags {
+      display: flex; gap: var(--space-1); flex-wrap: wrap; margin-top: var(--space-2);
+    }
+    .tour-item-tag {
+      font-size: 0.7rem; font-weight: 500; padding: 2px 8px;
+      border-radius: 4px; background: rgba(244,121,32,0.08); color: var(--color-primary);
+    }
+    .tour-item-remove {
+      background: none; border: none; cursor: pointer; padding: 4px;
+      color: var(--color-text-faint); border-radius: 4px;
+      transition: all 0.15s ease; flex-shrink: 0;
+    }
+    .tour-item-remove:hover { background: #fef2f2; color: #ef4444; }
+
+    .tour-panel-footer {
+      padding: var(--space-4) var(--space-5);
+      border-top: 1px solid var(--color-border);
+      background: var(--color-surface-2); flex-shrink: 0;
+    }
+    .tour-panel-actions {
+      display: flex; gap: var(--space-2);
+    }
+    .tour-btn-primary {
+      flex: 1; padding: var(--space-2) var(--space-4);
+      background: var(--color-primary); color: #fff;
+      border: none; border-radius: 8px; font-weight: 600;
+      font-size: var(--text-sm); cursor: pointer;
+      transition: all 0.15s ease; text-align: center;
+    }
+    .tour-btn-primary:hover { background: #e06a10; transform: translateY(-1px); }
+    .tour-btn-secondary {
+      padding: var(--space-2) var(--space-3);
+      background: var(--color-surface); color: var(--color-text-muted);
+      border: 1px solid var(--color-border); border-radius: 8px; font-weight: 500;
+      font-size: var(--text-sm); cursor: pointer;
+      transition: all 0.15s ease;
+    }
+    .tour-btn-secondary:hover { background: var(--color-bg); color: var(--color-text); }
+
+    /* ===== TOUR LIST TOGGLE BUTTON (on map) ===== */
+    .tour-toggle {
+      position: absolute; top: 12px; left: 12px; z-index: 500;
+      display: flex; align-items: center; gap: var(--space-2);
+      padding: 8px 14px; background: var(--color-surface);
+      border: 1px solid var(--color-border); border-radius: 10px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+      cursor: pointer; font-family: var(--font-body);
+      font-size: var(--text-sm); font-weight: 600; color: var(--color-text);
+      transition: all 0.15s ease;
+    }
+    .tour-toggle:hover { border-color: var(--color-primary); box-shadow: 0 2px 12px rgba(0,0,0,0.12); }
+    .tour-toggle svg { flex-shrink: 0; }
+    .tour-toggle-count {
+      display: inline-flex; align-items: center; justify-content: center;
+      min-width: 20px; height: 20px; padding: 0 6px;
+      border-radius: 10px; background: var(--color-primary);
+      color: #fff; font-size: 0.7rem; font-weight: 700;
+    }
+    .tour-toggle-count:empty { display: none; }
+    .tour-toggle-count[data-count="0"] { background: var(--color-text-faint); }
+
+    /* ===== ADD TO TOUR BUTTON (in tooltips) ===== */
+    .tooltip-tour-btn {
+      display: flex; align-items: center; justify-content: center; gap: 6px;
+      width: 100%; margin-top: var(--space-3); padding: 8px 0;
+      background: linear-gradient(135deg, var(--color-primary), #e06a10);
+      color: #fff; border: none; border-radius: 8px;
+      font-family: var(--font-body); font-size: var(--text-xs);
+      font-weight: 600; cursor: pointer;
+      transition: all 0.2s ease; letter-spacing: 0.01em;
+    }
+    .tooltip-tour-btn:hover { transform: translateY(-1px); box-shadow: 0 3px 12px rgba(244,121,32,0.3); }
+    .tooltip-tour-btn.added {
+      background: linear-gradient(135deg, #059669, #047857);
+    }
+    .tooltip-tour-btn.added:hover {
+      background: linear-gradient(135deg, #dc2626, #b91c1c);
+    }
+
+    /* Overlay when panel is open (mobile) */
+    .tour-overlay {
+      position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0,0,0,0.3); z-index: 9999;
+      opacity: 0; pointer-events: none;
+      transition: opacity 0.3s ease;
+    }
+    .tour-overlay.visible { opacity: 1; pointer-events: auto; }
+
+    @media (max-width: 600px) {
+      .tour-panel { width: 100%; }
+      .tour-toggle {
+        top: auto; bottom: 12px; left: 50%; transform: translateX(-50%);
+        padding: 10px 18px; border-radius: 24px;
+        box-shadow: 0 4px 16px rgba(0,0,0,0.15);
+      }
+    }
+
 </style>
 </head>
 <body>
+
+<!-- Tour List Overlay -->
+<div class="tour-overlay" id="tourOverlay" onclick="closeTourPanel()"></div>
+
+<!-- Tour List Panel -->
+<div class="tour-panel" id="tourPanel">
+  <div class="tour-panel-header">
+    <div class="tour-panel-title">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+      Tour List
+      <span class="tour-panel-count" id="tourPanelCount">0</span>
+    </div>
+    <button class="tour-panel-close" onclick="closeTourPanel()" title="Close">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+    </button>
+  </div>
+  <div class="tour-panel-body" id="tourPanelBody">
+    <!-- Items injected by JS -->
+  </div>
+  <div class="tour-panel-footer" id="tourPanelFooter" style="display:none;">
+    <div class="tour-panel-actions">
+      <button class="tour-btn-primary" onclick="exportTourList()">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="vertical-align: middle; margin-right: 4px;"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        Export List
+      </button>
+      <button class="tour-btn-secondary" onclick="clearTourList()">Clear All</button>
+    </div>
+  </div>
+</div>
 
 <header class="header">
   <div class="header-inner">
@@ -1189,6 +1387,14 @@ body {
 
 <main class="main">
   <div id="map"></div>
+
+  <!-- Tour List Toggle -->
+  <button class="tour-toggle" id="tourToggle" onclick="openTourPanel()">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+    Tour List
+    <span class="tour-toggle-count" id="tourToggleCount" data-count="0"></span>
+  </button>
+
 
   <!-- Summary cards at bottom -->
   <div class="summary-bar" id="summaryBar">
@@ -1456,6 +1662,10 @@ function buildPopup(b) {
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
             <span>Material terms pending — tour scheduled week of 3/16/26</span>
           </div>
+          <button class="tooltip-tour-btn" onclick="toggleTourItem('shortlist', ${b.id})" id="tour-btn-shortlist-${b.id}">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+            <span>Add to Tour List</span>
+          </button>
         </div>
       </div>
     `;
@@ -1558,6 +1768,10 @@ function buildPopup(b) {
         <div class="tooltip-source">
           Source: ${b.source}
         </div>
+        <button class="tooltip-tour-btn" onclick="toggleTourItem('shortlist', ${b.id})" id="tour-btn-shortlist-${b.id}">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+          <span>Add to Tour List</span>
+        </button>
       </div>
     </div>
   `;
@@ -2142,6 +2356,10 @@ function buildSurveyPopup(b) {
             <span class="survey-tooltip-field-value">${b.directSublease}</span>
           </div>
         </div>
+        <button class="tooltip-tour-btn" onclick="toggleTourItem('survey', ${b.num})" id="tour-btn-survey-${b.num}">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+          <span>Add to Tour List</span>
+        </button>
       </div>
     </div>
   `;
@@ -2240,6 +2458,206 @@ legend.onAdd = function(map) {
 };
 
 legend.addTo(map);
+
+
+// ============================================================
+// Tour List Feature
+// ============================================================
+
+const TOUR_LIST_KEY = 'sf-office-tour-list';
+
+function getTourList() {
+  try {
+    return JSON.parse(localStorage.getItem(TOUR_LIST_KEY)) || [];
+  } catch(e) { return []; }
+}
+
+function saveTourList(list) {
+  localStorage.setItem(TOUR_LIST_KEY, JSON.stringify(list));
+}
+
+function isOnTourList(type, id) {
+  return getTourList().some(item => item.type === type && item.id === id);
+}
+
+function getBuildingInfo(type, id) {
+  if (type === 'shortlist') {
+    const b = BUILDINGS.find(x => x.id === id);
+    if (!b) return null;
+    return {
+      type, id,
+      name: b.name,
+      address: b.address,
+      color: b.color,
+      meta: b.premisesRSF + (b.baseRent !== 'TBD' ? ' · ' + b.baseRent : ''),
+      tags: [b.dealType, b.statusLabel].filter(Boolean),
+      lat: b.lat, lng: b.lng,
+      pdfPage: b.pdfPage
+    };
+  } else {
+    const b = SURVEY_BUILDINGS.find(x => x.num === id);
+    if (!b) return null;
+    return {
+      type, id,
+      name: b.address,
+      address: b.neighborhood,
+      color: '#9ca3af',
+      meta: b.buildingSF + ' · ' + b.spaceAvailable + ' avail',
+      tags: [b.directSublease, b.rentalRate].filter(Boolean),
+      lat: b.lat, lng: b.lng,
+      pdfPage: PDF_PAGES[b.num]
+    };
+  }
+}
+
+function toggleTourItem(type, id) {
+  let list = getTourList();
+  const idx = list.findIndex(item => item.type === type && item.id === id);
+
+  if (idx >= 0) {
+    list.splice(idx, 1);
+  } else {
+    const info = getBuildingInfo(type, id);
+    if (info) list.push(info);
+  }
+
+  saveTourList(list);
+  refreshTourUI();
+  refreshAllTooltipButtons();
+}
+
+function refreshTourUI() {
+  const list = getTourList();
+  const count = list.length;
+
+  // Update counts
+  document.getElementById('tourPanelCount').textContent = count;
+  const toggleCount = document.getElementById('tourToggleCount');
+  toggleCount.textContent = count || '';
+  toggleCount.dataset.count = count;
+
+  // Update header subtitle
+  const subtitle = document.querySelector('.header-subtitle');
+  if (subtitle) {
+    subtitle.textContent = '33 Buildings Evaluated · ' + count + ' on Tour List';
+  }
+
+  // Update panel body
+  const body = document.getElementById('tourPanelBody');
+  const footer = document.getElementById('tourPanelFooter');
+
+  if (count === 0) {
+    body.innerHTML = `
+      <div class="tour-panel-empty">
+        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+        <p><strong>No buildings yet</strong>
+        Click "Add to Tour List" in any building tooltip to start building your list.</p>
+      </div>
+    `;
+    footer.style.display = 'none';
+  } else {
+    body.innerHTML = list.map((item, i) => `
+      <div class="tour-item" onclick="flyToTourItem('${item.type}', ${item.id})" style="cursor:pointer;">
+        <div class="tour-item-dot" style="background:${item.color}"></div>
+        <div class="tour-item-info">
+          <div class="tour-item-name">${item.name}</div>
+          <div class="tour-item-meta">${item.meta}</div>
+          ${item.tags.length ? '<div class="tour-item-tags">' + item.tags.map(t => '<span class="tour-item-tag">' + t + '</span>').join('') + '</div>' : ''}
+        </div>
+        <button class="tour-item-remove" onclick="event.stopPropagation(); toggleTourItem('${item.type}', ${item.id})" title="Remove">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+      </div>
+    `).join('');
+    footer.style.display = 'block';
+  }
+}
+
+function refreshAllTooltipButtons() {
+  // Update any visible tooltip buttons
+  document.querySelectorAll('.tooltip-tour-btn').forEach(btn => {
+    const id = btn.id; // e.g. "tour-btn-survey-5" or "tour-btn-shortlist-2"
+    if (!id) return;
+    const parts = id.replace('tour-btn-', '').match(/^(survey|shortlist)-(\d+)$/);
+    if (!parts) return;
+    const type = parts[1];
+    const numId = parseInt(parts[2]);
+    const onList = isOnTourList(type, numId);
+    btn.classList.toggle('added', onList);
+    const span = btn.querySelector('span');
+    if (span) span.textContent = onList ? 'On Tour List ✓ (click to remove)' : 'Add to Tour List';
+  });
+}
+
+function flyToTourItem(type, id) {
+  let lat, lng;
+  if (type === 'shortlist') {
+    const b = BUILDINGS.find(x => x.id === id);
+    if (b) { lat = b.lat; lng = b.lng; }
+  } else {
+    const b = SURVEY_BUILDINGS.find(x => x.num === id);
+    if (b) { lat = b.lat; lng = b.lng; }
+  }
+  if (lat && lng) {
+    closeTourPanel();
+    map.flyTo([lat, lng], 17, { duration: 0.8 });
+    // Open the popup
+    setTimeout(() => {
+      const allM = type === 'shortlist' ? markers : surveyMarkers;
+      const m = allM.find(mk => {
+        if (type === 'shortlist') return mk._buildingId === id;
+        return true; // find by position for survey
+      });
+      if (m) m.openPopup();
+    }, 900);
+  }
+}
+
+function openTourPanel() {
+  refreshTourUI();
+  document.getElementById('tourPanel').classList.add('open');
+  document.getElementById('tourOverlay').classList.add('visible');
+}
+
+function closeTourPanel() {
+  document.getElementById('tourPanel').classList.remove('open');
+  document.getElementById('tourOverlay').classList.remove('visible');
+}
+
+function clearTourList() {
+  if (confirm('Remove all buildings from your tour list?')) {
+    saveTourList([]);
+    refreshTourUI();
+    refreshAllTooltipButtons();
+  }
+}
+
+function exportTourList() {
+  const list = getTourList();
+  if (list.length === 0) return;
+
+  let csv = 'Name,Address,Type,Rate,PDF Link\n';
+  list.forEach(item => {
+    const pdfUrl = 'https://smoitoza.github.io/procore-sf-survey/survey-120dpi.pdf#page=' + (item.pdfPage || '');
+    csv += '"' + item.name + '","' + item.address + '","' + (item.tags[0]||'') + '","' + (item.tags[1]||'') + '","' + pdfUrl + '"\n';
+  });
+
+  const blob = new Blob([csv], { type: 'text/csv' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'tour-list.csv';
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
+// Re-bind popup content to update button state when popup opens
+map.on('popupopen', function(e) {
+  setTimeout(refreshAllTooltipButtons, 50);
+});
+
+// Initialize on load
+refreshTourUI();
 
 </script>
 </body>
