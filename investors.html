@@ -206,8 +206,8 @@
     }
     .problem-grid {
       display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: var(--space-8);
+      grid-template-columns: repeat(3, 1fr);
+      gap: var(--space-6);
       margin-top: var(--space-8);
     }
     .problem-card {
@@ -241,6 +241,103 @@
     }
     @media (max-width: 768px) {
       .problem-grid { grid-template-columns: 1fr; }
+    }
+
+    /* ===== AUDIENCE / TWO-SIDED MARKET ===== */
+    .audience-section {
+      padding: var(--space-24) 0;
+      background: var(--navy-50);
+    }
+    .audience-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: var(--space-6);
+      margin-top: var(--space-8);
+    }
+    .audience-card {
+      background: #fff;
+      border: 1px solid var(--navy-200);
+      border-radius: var(--radius-2xl);
+      padding: var(--space-8);
+      position: relative;
+      overflow: hidden;
+    }
+    .audience-card::before {
+      content: '';
+      position: absolute; top: 0; left: 0; right: 0;
+      height: 3px;
+      background: var(--accent);
+    }
+    .audience-card-alt::before {
+      background: #f59e0b;
+    }
+    .audience-header {
+      margin-bottom: var(--space-6);
+    }
+    .audience-icon {
+      width: 48px; height: 48px;
+      background: rgba(37, 99, 235, 0.1);
+      border-radius: var(--radius-lg);
+      display: flex; align-items: center; justify-content: center;
+      color: var(--accent);
+      margin-bottom: var(--space-4);
+    }
+    .audience-header h3 {
+      font-size: var(--text-lg); font-weight: 700;
+      color: var(--navy-900); margin-bottom: var(--space-2);
+    }
+    .audience-tag {
+      display: inline-block;
+      font-size: var(--text-xs); font-weight: 600;
+      color: var(--accent); background: rgba(37,99,235,0.08);
+      padding: var(--space-1) var(--space-3);
+      border-radius: var(--radius-2xl);
+      text-transform: uppercase; letter-spacing: 0.04em;
+    }
+    .audience-tag-amber {
+      color: #b45309; background: rgba(245, 158, 11, 0.1);
+    }
+    .audience-list {
+      list-style: none; padding: 0;
+      margin-bottom: var(--space-6);
+    }
+    .audience-list li {
+      font-size: var(--text-sm); color: var(--navy-600);
+      padding: var(--space-2) 0;
+      padding-left: var(--space-5);
+      position: relative;
+      line-height: 1.5;
+    }
+    .audience-list li::before {
+      content: '';
+      position: absolute; left: 0; top: 12px;
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: var(--navy-300);
+    }
+    .audience-value {
+      font-size: var(--text-sm); font-weight: 600;
+      color: var(--navy-900);
+      padding: var(--space-4);
+      background: var(--navy-50);
+      border-radius: var(--radius-lg);
+      border-left: 3px solid var(--accent);
+    }
+    .audience-card-alt .audience-value {
+      border-left-color: #f59e0b;
+    }
+    .audience-note {
+      margin-top: var(--space-8);
+      background: #fff;
+      border: 1px solid var(--navy-200);
+      border-radius: var(--radius-xl);
+      padding: var(--space-5) var(--space-6);
+      display: flex; align-items: flex-start; gap: var(--space-3);
+    }
+    .audience-note svg { flex-shrink: 0; color: var(--accent); margin-top: 2px; }
+    .audience-note p { font-size: var(--text-sm); color: var(--navy-600); }
+    @media (max-width: 768px) {
+      .audience-grid { grid-template-columns: 1fr; }
     }
 
     /* ===== SOLUTION SECTION ===== */
@@ -434,11 +531,33 @@
       padding: var(--space-24) 0;
       background: #ffffff;
     }
+    .model-tracks {
+      display: flex; flex-direction: column;
+      gap: var(--space-10);
+      margin-top: var(--space-8);
+    }
+    .model-track {
+      border: 1px solid var(--navy-200);
+      border-radius: var(--radius-2xl);
+      overflow: hidden;
+    }
+    .model-track-header {
+      display: flex; align-items: center; gap: var(--space-3);
+      padding: var(--space-4) var(--space-6);
+      background: var(--navy-900); color: #fff;
+      font-size: var(--text-sm); font-weight: 700;
+      text-transform: uppercase; letter-spacing: 0.06em;
+    }
+    .model-track-header-amber {
+      background: linear-gradient(135deg, #92400e 0%, #b45309 100%);
+    }
+    .model-track .pricing-grid {
+      padding: var(--space-6);
+    }
     .pricing-grid {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
       gap: var(--space-6);
-      margin-top: var(--space-8);
     }
     .pricing-card {
       background: var(--navy-50);
@@ -505,6 +624,7 @@
 
     @media (max-width: 768px) {
       .pricing-grid { grid-template-columns: 1fr; max-width: 400px; margin-inline: auto; }
+      .model-track .pricing-grid { max-width: none; padding: var(--space-4); }
     }
 
     /* ===== FOUNDER SECTION ===== */
@@ -675,8 +795,8 @@
       <div class="nav-links">
         <a href="index.html">Back to Product</a>
         <a href="#problem">Problem</a>
-        <a href="#solution">Solution</a>
-        <a href="#market">Market</a>
+        <a href="#audience">Market Fit</a>
+        <a href="#market">TAM</a>
         <a href="#founder">Founder</a>
         <a href="#contact" class="nav-cta">Let's Talk</a>
       </div>
@@ -701,7 +821,7 @@
     <div class="container">
       <span class="section-label">The Problem</span>
       <h2 class="section-title">A $277B market stuck in the past</h2>
-      <p class="section-desc">Corporate real estate teams make million-dollar decisions using tools from the fax machine era.</p>
+      <p class="section-desc">Both sides of the table are losing. Corporate teams make million-dollar decisions from static PDFs, and brokers waste weeks producing them.</p>
 
       <div class="problem-grid fade-up">
         <div class="problem-card">
@@ -718,6 +838,63 @@
           <h3>Brokers Don't Speak CFO</h3>
           <p>Brokers care about the deal, not your financial reports. They send an asking rate and a nice rendering. They never send cash flow schedules, straight-line P&L, or GAAP-format financials. Your finance team rebuilds everything from scratch for every deal.</p>
         </div>
+        <div class="problem-card">
+          <div class="problem-icon" style="background: rgba(245, 158, 11, 0.1); color: #f59e0b;">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+          </div>
+          <h3>Brokers Waste Weeks Building Surveys</h3>
+          <p>Every broker team assembles the same deliverable from scratch: gathering listings, formatting pages, printing decks, tracking distribution. They email PDFs, chase responses, and have zero analytics on what clients actually looked at. The tools they use to create surveys are just as outdated as the surveys themselves.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== 2.5 TWO-SIDED MARKET ========== -->
+  <section class="audience-section" id="audience">
+    <div class="container">
+      <span class="section-label">Two-Sided Market</span>
+      <h2 class="section-title">One platform, both sides of the table</h2>
+      <p class="section-desc">SRE Analytics serves both the people who receive broker surveys and the people who create them.</p>
+
+      <div class="audience-grid fade-up">
+        <div class="audience-card">
+          <div class="audience-header">
+            <div class="audience-icon">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+            </div>
+            <h3>Corporate RE Teams</h3>
+            <span class="audience-tag">The Occupier</span>
+          </div>
+          <ul class="audience-list">
+            <li>Receives 100+ page PDF surveys and needs to make decisions fast</li>
+            <li>Needs interactive maps, filtering, and tour list builders</li>
+            <li>CFO demands cash flow schedules and GAAP-format financials</li>
+            <li>Currently rebuilds everything manually in Excel</li>
+          </ul>
+          <div class="audience-value">SRE Analytics turns their broker survey into a live workspace in minutes</div>
+        </div>
+
+        <div class="audience-card audience-card-alt">
+          <div class="audience-header">
+            <div class="audience-icon" style="background: rgba(245, 158, 11, 0.1); color: #f59e0b;">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+            </div>
+            <h3>Brokers &amp; Brokerage Teams</h3>
+            <span class="audience-tag audience-tag-amber">The Creator</span>
+          </div>
+          <ul class="audience-list">
+            <li>Spends weeks assembling survey decks from scratch</li>
+            <li>Prints, emails, and tracks distribution manually</li>
+            <li>Has zero insight into what clients actually reviewed</li>
+            <li>Competes on speed and quality of deliverables</li>
+          </ul>
+          <div class="audience-value">SRE Analytics gives brokers a competitive edge: faster deliverables, better client alignment, built-in analytics</div>
+        </div>
+      </div>
+
+      <div class="audience-note fade-up">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
+        <p><strong>Network effects compound.</strong> Every broker who publishes through SRE Analytics makes the platform more valuable to occupiers. Every occupier who demands interactive surveys pushes brokers to adopt. The platform becomes the standard format for commercial real estate deliverables.</p>
       </div>
     </div>
   </section>
@@ -888,95 +1065,99 @@
   <section class="model-section" id="model">
     <div class="container">
       <span class="section-label">Business Model</span>
-      <h2 class="section-title">SaaS subscription with usage-based revenue</h2>
-      <p class="section-desc">Revenue scales naturally with portfolio size and transaction volume.</p>
+      <h2 class="section-title">Two revenue streams, one platform</h2>
+      <p class="section-desc">SaaS subscriptions for both sides of the table. Revenue scales with portfolio size, transaction volume, and brokerage adoption.</p>
 
-      <div class="pricing-grid fade-up">
-        <div class="pricing-card">
-          <div class="pricing-tier">Individual</div>
-          <div class="pricing-price">$99/mo</div>
-          <div class="pricing-detail">For independent CRE professionals</div>
-          <ul class="pricing-features">
-            <li>
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
-              5 survey uploads per month
-            </li>
-            <li>
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
-              Interactive mapping
-            </li>
-            <li>
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
-              Tour list builder with CSV export
-            </li>
-            <li>
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
-              Basic financial modeling
-            </li>
-          </ul>
+      <div class="model-tracks fade-up">
+        <div class="model-track">
+          <div class="model-track-header">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+            Occupier Track
+          </div>
+          <div class="pricing-grid">
+            <div class="pricing-card">
+              <div class="pricing-tier">Professional</div>
+              <div class="pricing-price">$99/mo</div>
+              <div class="pricing-detail">Independent CRE professionals</div>
+              <ul class="pricing-features">
+                <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> 5 survey uploads per month</li>
+                <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> Interactive mapping</li>
+                <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> Tour list builder</li>
+                <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> Basic financial modeling</li>
+              </ul>
+            </div>
+            <div class="pricing-card featured">
+              <div class="pricing-badge">Core</div>
+              <div class="pricing-tier">Corporate Team</div>
+              <div class="pricing-price">$499/mo</div>
+              <div class="pricing-detail">Corporate RE teams</div>
+              <ul class="pricing-features">
+                <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> 25 surveys per month</li>
+                <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> Full financial modeling engine</li>
+                <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> GAAP-format cash flow schedules</li>
+                <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> Team sharing and collaboration</li>
+              </ul>
+            </div>
+            <div class="pricing-card">
+              <div class="pricing-tier">Enterprise</div>
+              <div class="pricing-price">Custom</div>
+              <div class="pricing-detail">Fortune 500 portfolios</div>
+              <ul class="pricing-features">
+                <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> Unlimited survey processing</li>
+                <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> Custom financial templates</li>
+                <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> SSO, API, dedicated account manager</li>
+                <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> Multi-region support</li>
+              </ul>
+            </div>
+          </div>
         </div>
 
-        <div class="pricing-card featured">
-          <div class="pricing-badge">Most Popular</div>
-          <div class="pricing-tier">Team</div>
-          <div class="pricing-price">$499/mo</div>
-          <div class="pricing-detail">For corporate real estate teams</div>
-          <ul class="pricing-features">
-            <li>
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
-              25 survey uploads per month
-            </li>
-            <li>
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
-              Full financial modeling engine
-            </li>
-            <li>
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
-              Team sharing and collaboration
-            </li>
-            <li>
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
-              GAAP-format cash flow schedules
-            </li>
-            <li>
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
-              Priority support
-            </li>
-          </ul>
-        </div>
-
-        <div class="pricing-card">
-          <div class="pricing-tier">Enterprise</div>
-          <div class="pricing-price">Custom</div>
-          <div class="pricing-detail">For Fortune 500 portfolios</div>
-          <ul class="pricing-features">
-            <li>
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
-              Unlimited survey processing
-            </li>
-            <li>
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
-              Custom financial templates
-            </li>
-            <li>
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
-              SSO and API access
-            </li>
-            <li>
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
-              Dedicated account manager
-            </li>
-            <li>
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
-              Multi-region support
-            </li>
-          </ul>
+        <div class="model-track">
+          <div class="model-track-header model-track-header-amber">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+            Broker Track
+          </div>
+          <div class="pricing-grid">
+            <div class="pricing-card">
+              <div class="pricing-tier">Solo Broker</div>
+              <div class="pricing-price">$149/mo</div>
+              <div class="pricing-detail">Individual brokers</div>
+              <ul class="pricing-features">
+                <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> Build and publish interactive surveys</li>
+                <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> Client engagement analytics</li>
+                <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> Branded deliverables</li>
+                <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> Competitive edge in pitches</li>
+              </ul>
+            </div>
+            <div class="pricing-card">
+              <div class="pricing-tier">Brokerage Team</div>
+              <div class="pricing-price">$799/mo</div>
+              <div class="pricing-detail">Teams of 5-20 brokers</div>
+              <ul class="pricing-features">
+                <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> Shared survey templates</li>
+                <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> Team-wide client analytics</li>
+                <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> Custom brokerage branding</li>
+                <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> Priority support</li>
+              </ul>
+            </div>
+            <div class="pricing-card">
+              <div class="pricing-tier">Brokerage Enterprise</div>
+              <div class="pricing-price">Custom</div>
+              <div class="pricing-detail">CBRE, JLL, Savills, Cushman</div>
+              <ul class="pricing-features">
+                <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> Firm-wide deployment</li>
+                <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> White-label option</li>
+                <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> API integration with CRM</li>
+                <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> Volume licensing</li>
+              </ul>
+            </div>
+          </div>
         </div>
       </div>
 
       <div class="revenue-note fade-up">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
-        <p><strong>Revenue compounds naturally.</strong> Per-survey processing credits mean revenue grows with portfolio size and transaction volume. A Fortune 500 company with 200+ locations renewing leases on a rolling basis generates recurring demand without additional sales effort.</p>
+        <p><strong>Revenue compounds from both sides.</strong> Occupier revenue grows with portfolio size and transaction volume. Broker revenue grows with team size and market coverage. A brokerage team serving 50 corporate clients generates demand on both sides of the platform simultaneously.</p>
       </div>
     </div>
   </section>
