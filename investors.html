@@ -526,6 +526,148 @@
       .comp-table { min-width: 640px; }
     }
 
+    /* ===== AI ECONOMICS ===== */
+    .ai-econ-section {
+      padding: var(--space-24) 0;
+      background: var(--navy-900);
+      position: relative; overflow: hidden;
+    }
+    .ai-econ-section::before {
+      content: '';
+      position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+      background: radial-gradient(ellipse 70% 50% at 20% 50%, rgba(37,99,235,0.06) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .ai-econ-section .container { position: relative; z-index: 1; }
+    .ai-econ-section .section-label { color: var(--navy-400); }
+    .ai-econ-section .section-title { color: #fff; }
+    .ai-econ-section .section-desc { color: var(--navy-400); }
+
+    .ai-pipeline {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: var(--space-4);
+      margin-top: var(--space-8);
+    }
+    .ai-pipeline-step {
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: var(--radius-xl);
+      padding: var(--space-6);
+      position: relative;
+    }
+    .ai-pipeline-step::after {
+      content: '';
+      position: absolute; right: -14px; top: 50%; transform: translateY(-50%);
+      width: 0; height: 0;
+      border-left: 8px solid rgba(255,255,255,0.15);
+      border-top: 6px solid transparent;
+      border-bottom: 6px solid transparent;
+    }
+    .ai-pipeline-step:last-child::after { display: none; }
+    .ai-step-label {
+      font-size: var(--text-xs); font-weight: 600;
+      color: var(--accent); text-transform: uppercase;
+      letter-spacing: 0.06em; margin-bottom: var(--space-2);
+    }
+    .ai-step-title {
+      font-size: var(--text-sm); font-weight: 700;
+      color: #fff; margin-bottom: var(--space-2);
+    }
+    .ai-step-desc {
+      font-size: var(--text-xs); color: var(--navy-400); line-height: 1.5;
+    }
+    .ai-step-cost {
+      margin-top: var(--space-3);
+      font-size: var(--text-xs); font-weight: 600;
+      color: var(--navy-300);
+      padding: var(--space-1) var(--space-3);
+      background: rgba(255,255,255,0.06);
+      border-radius: var(--radius-lg);
+      display: inline-block;
+    }
+
+    .ai-margin-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: var(--space-6);
+      margin-top: var(--space-10);
+    }
+    .ai-margin-card {
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: var(--radius-xl);
+      padding: var(--space-6);
+    }
+    .ai-margin-card h4 {
+      font-size: var(--text-sm); font-weight: 600;
+      color: var(--navy-300); margin-bottom: var(--space-3);
+      text-transform: uppercase; letter-spacing: 0.04em;
+    }
+    .ai-margin-card p {
+      font-size: var(--text-sm); color: var(--navy-400); line-height: 1.6;
+    }
+    .ai-margin-card .highlight { color: #fff; font-weight: 600; }
+
+    .ai-credit-breakdown {
+      margin-top: var(--space-10);
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: var(--radius-2xl);
+      overflow: hidden;
+    }
+    .ai-credit-header {
+      padding: var(--space-4) var(--space-6);
+      background: rgba(37,99,235,0.12);
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+    }
+    .ai-credit-header h4 {
+      font-size: var(--text-sm); font-weight: 700;
+      color: #fff; margin: 0;
+    }
+    .ai-credit-body {
+      padding: var(--space-6);
+    }
+    .ai-credit-row {
+      display: grid;
+      grid-template-columns: 1fr auto auto;
+      gap: var(--space-6);
+      padding: var(--space-3) 0;
+      border-bottom: 1px solid rgba(255,255,255,0.05);
+      align-items: center;
+    }
+    .ai-credit-row:last-child { border-bottom: none; }
+    .ai-credit-row .label {
+      font-size: var(--text-sm); color: var(--navy-300);
+    }
+    .ai-credit-row .weight {
+      font-size: var(--text-sm); color: var(--navy-400);
+      text-align: right;
+    }
+    .ai-credit-row .bar-wrap {
+      width: 160px;
+      height: 8px;
+      background: rgba(255,255,255,0.06);
+      border-radius: 4px;
+      overflow: hidden;
+    }
+    .ai-credit-row .bar {
+      height: 100%;
+      border-radius: 4px;
+      background: var(--accent);
+    }
+    .ai-credit-row.heavy .bar { background: #ef4444; }
+    .ai-credit-row.medium .bar { background: #f59e0b; }
+    .ai-credit-row.light .bar { background: var(--green-500); }
+
+    @media (max-width: 768px) {
+      .ai-pipeline { grid-template-columns: 1fr; }
+      .ai-pipeline-step::after { display: none; }
+      .ai-margin-grid { grid-template-columns: 1fr; }
+      .ai-credit-row { grid-template-columns: 1fr; gap: var(--space-2); }
+      .ai-credit-row .bar-wrap { width: 100%; }
+    }
+
     /* ===== BUSINESS MODEL ===== */
     .model-section {
       padding: var(--space-24) 0;
@@ -796,7 +938,7 @@
         <a href="index.html">Back to Product</a>
         <a href="#problem">Problem</a>
         <a href="#audience">Market Fit</a>
-        <a href="#market">TAM</a>
+        <a href="#ai-economics">AI Economics</a>
         <a href="#founder">Founder</a>
         <a href="#contact" class="nav-cta">Let's Talk</a>
       </div>
@@ -1061,12 +1203,81 @@
     </div>
   </section>
 
+  <!-- ========== 5.5 AI ECONOMICS ========== -->
+  <section class="ai-econ-section" id="ai-economics">
+    <div class="container">
+      <span class="section-label">AI Economics</span>
+      <h2 class="section-title">How AI powers the platform (and what it costs)</h2>
+      <p class="section-desc">Every survey processed runs through an AI pipeline. Understanding the compute cost structure is key to understanding our margins.</p>
+
+      <div class="ai-pipeline fade-up">
+        <div class="ai-pipeline-step">
+          <div class="ai-step-label">Step 1</div>
+          <div class="ai-step-title">PDF Parsing &amp; Extraction</div>
+          <div class="ai-step-desc">AI reads every page of the broker survey. Extracts building names, addresses, square footage, asking rates, floor plans, and deal terms from unstructured text and tables.</div>
+          <div class="ai-step-cost">Heaviest compute cost</div>
+        </div>
+        <div class="ai-pipeline-step">
+          <div class="ai-step-label">Step 2</div>
+          <div class="ai-step-title">Geocoding &amp; Mapping</div>
+          <div class="ai-step-desc">Each extracted address is geocoded, validated, and plotted on an interactive map. Building metadata is structured and linked back to the source PDF page.</div>
+          <div class="ai-step-cost">Significant compute</div>
+        </div>
+        <div class="ai-pipeline-step">
+          <div class="ai-step-label">Step 3</div>
+          <div class="ai-step-title">Financial Modeling</div>
+          <div class="ai-step-desc">AI generates cash flow schedules, straight-line calculations, and GAAP-format P&amp;L from the extracted deal terms. This is the Pro feature - where the real CFO value lives.</div>
+          <div class="ai-step-cost">Pro add-on</div>
+        </div>
+      </div>
+
+      <div class="ai-credit-breakdown fade-up">
+        <div class="ai-credit-header">
+          <h4>AI Credit Cost Distribution Per Survey</h4>
+        </div>
+        <div class="ai-credit-body">
+          <div class="ai-credit-row heavy">
+            <div class="label">PDF parsing &amp; data extraction</div>
+            <div class="bar-wrap"><div class="bar" style="width:90%"></div></div>
+            <div class="weight">~45% of credits</div>
+          </div>
+          <div class="ai-credit-row heavy">
+            <div class="label">Geocoding &amp; map generation</div>
+            <div class="bar-wrap"><div class="bar" style="width:70%"></div></div>
+            <div class="weight">~30% of credits</div>
+          </div>
+          <div class="ai-credit-row medium">
+            <div class="label">Financial model generation (Pro)</div>
+            <div class="bar-wrap"><div class="bar" style="width:40%"></div></div>
+            <div class="weight">~15% of credits</div>
+          </div>
+          <div class="ai-credit-row light">
+            <div class="label">Tour list, export, sharing</div>
+            <div class="bar-wrap"><div class="bar" style="width:20%"></div></div>
+            <div class="weight">~10% of credits</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="ai-margin-grid fade-up">
+        <div class="ai-margin-card">
+          <h4>The Pricing Model</h4>
+          <p><span class="highlight">Base subscription + included AI credits.</span> Every plan includes a set number of survey processing credits per month. When users exceed their allowance, they purchase additional credit packs or upgrade. This creates predictable base revenue with elastic compute upside - the same model that made AWS and Twilio category-defining businesses.</p>
+        </div>
+        <div class="ai-margin-card">
+          <h4>Why Margins Improve at Scale</h4>
+          <p><span class="highlight">AI costs drop while subscription revenue stays flat.</span> Model efficiency improves with volume: caching common building data, batch processing surveys from the same market, and fine-tuning extraction models on CRE-specific documents. A 129-page San Francisco survey has a measurable compute cost today. At 10,000 surveys processed, that cost per survey drops significantly through caching and model optimization while the subscription price does not.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
   <!-- ========== 6. BUSINESS MODEL ========== -->
   <section class="model-section" id="model">
     <div class="container">
       <span class="section-label">Business Model</span>
-      <h2 class="section-title">Two revenue streams, one platform</h2>
-      <p class="section-desc">SaaS subscriptions for both sides of the table. Revenue scales with portfolio size, transaction volume, and brokerage adoption.</p>
+      <h2 class="section-title">Base + credits + Pro upsell</h2>
+      <p class="section-desc">Three revenue layers: platform subscription, AI processing credits (included with overage), and Pro financial modeling add-on.</p>
 
       <div class="model-tracks fade-up">
         <div class="model-track">
@@ -1080,10 +1291,10 @@
               <div class="pricing-price">$99/mo</div>
               <div class="pricing-detail">Independent CRE professionals</div>
               <ul class="pricing-features">
-                <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> 5 survey uploads per month</li>
-                <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> Interactive mapping</li>
-                <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> Tour list builder</li>
-                <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> Basic financial modeling</li>
+                <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> 5 AI credits included (1 credit = 1 survey)</li>
+                <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> Interactive mapping + tour list builder</li>
+                <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> Overage: $15 per additional credit</li>
+                <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="color:var(--navy-300)"><polyline points="20 6 9 17 4 12"/></svg> <span style="color:var(--navy-400)">Financial modeling available as Pro add-on</span></li>
               </ul>
             </div>
             <div class="pricing-card featured">
@@ -1092,10 +1303,10 @@
               <div class="pricing-price">$499/mo</div>
               <div class="pricing-detail">Corporate RE teams</div>
               <ul class="pricing-features">
-                <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> 25 surveys per month</li>
-                <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> Full financial modeling engine</li>
-                <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> GAAP-format cash flow schedules</li>
+                <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> 25 AI credits included per month</li>
                 <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> Team sharing and collaboration</li>
+                <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> Overage: $12 per additional credit</li>
+                <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="color:var(--navy-300)"><polyline points="20 6 9 17 4 12"/></svg> <span style="color:var(--navy-400)">Financial modeling available as Pro add-on</span></li>
               </ul>
             </div>
             <div class="pricing-card">
@@ -1103,10 +1314,10 @@
               <div class="pricing-price">Custom</div>
               <div class="pricing-detail">Fortune 500 portfolios</div>
               <ul class="pricing-features">
-                <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> Unlimited survey processing</li>
-                <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> Custom financial templates</li>
+                <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> Volume credit allocation</li>
                 <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> SSO, API, dedicated account manager</li>
-                <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> Multi-region support</li>
+                <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> Negotiated overage rates</li>
+                <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> Pro financial modeling included</li>
               </ul>
             </div>
           </div>
@@ -1123,10 +1334,10 @@
               <div class="pricing-price">$149/mo</div>
               <div class="pricing-detail">Individual brokers</div>
               <ul class="pricing-features">
-                <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> Build and publish interactive surveys</li>
+                <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> 10 AI credits included</li>
+                <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> Publish interactive surveys</li>
                 <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> Client engagement analytics</li>
                 <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> Branded deliverables</li>
-                <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> Competitive edge in pitches</li>
               </ul>
             </div>
             <div class="pricing-card">
@@ -1134,8 +1345,8 @@
               <div class="pricing-price">$799/mo</div>
               <div class="pricing-detail">Teams of 5-20 brokers</div>
               <ul class="pricing-features">
-                <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> Shared survey templates</li>
-                <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> Team-wide client analytics</li>
+                <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> 50 AI credits included</li>
+                <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> Shared templates + team analytics</li>
                 <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> Custom brokerage branding</li>
                 <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> Priority support</li>
               </ul>
@@ -1145,19 +1356,27 @@
               <div class="pricing-price">Custom</div>
               <div class="pricing-detail">CBRE, JLL, Savills, Cushman</div>
               <ul class="pricing-features">
-                <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> Firm-wide deployment</li>
+                <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> Firm-wide credit pool</li>
                 <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> White-label option</li>
                 <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> API integration with CRM</li>
-                <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> Volume licensing</li>
+                <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> Volume licensing + negotiated rates</li>
               </ul>
             </div>
           </div>
         </div>
       </div>
 
+      <div class="revenue-note fade-up" style="margin-top:var(--space-6)">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+        <div>
+          <p style="margin-bottom:var(--space-2)"><strong>Pro Financial Modeling: +$199/mo add-on</strong></p>
+          <p>Unlocks AI-generated cash flow schedules, straight-line calculations, GAAP-format P&amp;L, and side-by-side deal comparison. Available on any plan. Included with Enterprise. This is the CFO-facing feature that turns a real estate tool into a financial planning platform.</p>
+        </div>
+      </div>
+
       <div class="revenue-note fade-up">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
-        <p><strong>Revenue compounds from both sides.</strong> Occupier revenue grows with portfolio size and transaction volume. Broker revenue grows with team size and market coverage. A brokerage team serving 50 corporate clients generates demand on both sides of the platform simultaneously.</p>
+        <p><strong>Three revenue layers compound.</strong> (1) Base subscription for platform access. (2) AI credit consumption that grows with usage. (3) Pro add-on upsell for financial modeling. A corporate team on the $499 plan with Pro financial modeling and regular overage generates $700+ in monthly recurring revenue before credit packs.</p>
       </div>
     </div>
   </section>
