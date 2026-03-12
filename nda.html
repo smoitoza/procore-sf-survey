@@ -1,0 +1,846 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <!-- Built with Perplexity Computer
+       ____                  __          _ __
+      / __ \___  _________  / /__  _  __(_) /___  __
+     / /_/ / _ \/ ___/ __ \/ / _ \| |/_/ / __/ / / /
+    / ____/  __/ /  / /_/ / /  __/>  </ / /_/ /_/ /
+   /_/    \___/_/  / .___/_/\___/_/|_/_/\__/\__, /
+                  /_/                      /____/
+       Computer -- https://www.perplexity.ai/computer -->
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SRE Analytics -- Non-Disclosure Agreement</title>
+  <link href="https://api.fontshare.com/v2/css?f[]=general-sans@400,500,600,700&f[]=cabinet-grotesk@500,700,800&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html {
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      text-rendering: optimizeLegibility;
+      scroll-behavior: smooth;
+    }
+
+    :root {
+      --text-xs:   clamp(0.75rem, 0.7rem + 0.25vw, 0.875rem);
+      --text-sm:   clamp(0.875rem, 0.8rem + 0.35vw, 1rem);
+      --text-base: clamp(1rem, 0.95rem + 0.25vw, 1.125rem);
+      --text-lg:   clamp(1.125rem, 1rem + 0.75vw, 1.5rem);
+      --text-xl:   clamp(1.5rem, 1.2rem + 1.25vw, 2.25rem);
+      --text-2xl:  clamp(2rem, 1.2rem + 2.5vw, 3rem);
+
+      --space-1: 0.25rem; --space-2: 0.5rem; --space-3: 0.75rem;
+      --space-4: 1rem; --space-5: 1.25rem; --space-6: 1.5rem;
+      --space-8: 2rem; --space-10: 2.5rem; --space-12: 3rem;
+      --space-16: 4rem; --space-20: 5rem;
+
+      --font-display: 'Cabinet Grotesk', 'Helvetica Neue', sans-serif;
+      --font-body: 'General Sans', 'Helvetica Neue', sans-serif;
+
+      --navy-950: #0a0f1a;
+      --navy-900: #0f172a;
+      --navy-800: #1e293b;
+      --navy-700: #334155;
+      --navy-600: #475569;
+      --navy-500: #64748b;
+      --navy-400: #94a3b8;
+      --navy-300: #cbd5e1;
+      --navy-200: #e2e8f0;
+      --navy-100: #f1f5f9;
+      --navy-50:  #f8fafc;
+
+      --accent: #2563eb;
+      --accent-hover: #1d4ed8;
+      --white: #ffffff;
+      --transition: 0.2s ease;
+    }
+
+    body {
+      font-family: var(--font-body);
+      background: var(--navy-950);
+      color: var(--navy-300);
+      line-height: 1.6;
+      min-height: 100vh;
+    }
+
+    /* ===== NAV ===== */
+    .nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      display: flex; align-items: center; justify-content: center;
+      padding: var(--space-4) var(--space-6);
+      background: rgba(10, 15, 26, 0.9);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+    }
+    .nav-brand {
+      display: flex; align-items: center; gap: var(--space-3);
+      text-decoration: none; color: var(--white);
+      font-family: var(--font-display); font-weight: 700;
+      font-size: var(--text-lg);
+    }
+    .nav-brand svg { flex-shrink: 0; }
+    .nav-brand span { color: var(--accent); }
+
+    /* ===== MAIN LAYOUT ===== */
+    .main {
+      max-width: 860px;
+      margin: 0 auto;
+      padding: calc(80px + var(--space-12)) var(--space-6) var(--space-16);
+    }
+
+    /* ===== HEADER ===== */
+    .page-header {
+      text-align: center;
+      margin-bottom: var(--space-12);
+    }
+    .page-header .badge {
+      display: inline-flex; align-items: center; gap: var(--space-2);
+      padding: var(--space-2) var(--space-4);
+      border-radius: 999px;
+      background: rgba(37, 99, 235, 0.12);
+      color: var(--accent);
+      font-size: var(--text-xs);
+      font-weight: 600;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      margin-bottom: var(--space-6);
+    }
+    .page-header .badge::before {
+      content: '';
+      width: 6px; height: 6px; border-radius: 50%;
+      background: var(--accent);
+    }
+    .page-header h1 {
+      font-family: var(--font-display);
+      font-size: var(--text-2xl);
+      font-weight: 800;
+      color: var(--white);
+      line-height: 1.15;
+      margin-bottom: var(--space-4);
+    }
+    .page-header p {
+      font-size: var(--text-base);
+      color: var(--navy-400);
+      max-width: 540px;
+      margin: 0 auto;
+    }
+
+    /* ===== STEPS INDICATOR ===== */
+    .steps {
+      display: flex;
+      justify-content: center;
+      gap: var(--space-8);
+      margin-bottom: var(--space-12);
+    }
+    .step {
+      display: flex; align-items: center; gap: var(--space-3);
+      font-size: var(--text-sm);
+      color: var(--navy-500);
+      transition: color var(--transition);
+    }
+    .step.active { color: var(--white); }
+    .step.completed { color: #22c55e; }
+    .step-num {
+      width: 32px; height: 32px;
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-weight: 700; font-size: var(--text-xs);
+      border: 2px solid var(--navy-700);
+      transition: all var(--transition);
+    }
+    .step.active .step-num {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: var(--white);
+    }
+    .step.completed .step-num {
+      background: #22c55e;
+      border-color: #22c55e;
+      color: var(--white);
+    }
+
+    /* ===== CARD ===== */
+    .card {
+      background: var(--navy-900);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 16px;
+      padding: var(--space-10);
+      margin-bottom: var(--space-8);
+    }
+
+    /* ===== FORM ===== */
+    .form-group { margin-bottom: var(--space-5); }
+    .form-label {
+      display: block;
+      font-size: var(--text-sm);
+      font-weight: 600;
+      color: var(--navy-300);
+      margin-bottom: var(--space-2);
+    }
+    .form-input {
+      width: 100%;
+      padding: var(--space-3) var(--space-4);
+      background: var(--navy-800);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 10px;
+      color: var(--white);
+      font-family: var(--font-body);
+      font-size: var(--text-base);
+      transition: border-color var(--transition);
+    }
+    .form-input::placeholder { color: var(--navy-500); }
+    .form-input:focus { outline: none; border-color: var(--accent); }
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: var(--space-4);
+    }
+
+    /* ===== NDA TERMS ===== */
+    .nda-terms-box {
+      background: var(--navy-800);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 12px;
+      max-height: 420px;
+      overflow-y: auto;
+      padding: var(--space-6) var(--space-8);
+      margin-bottom: var(--space-6);
+      font-size: var(--text-sm);
+      line-height: 1.7;
+      color: var(--navy-300);
+    }
+    .nda-terms-box::-webkit-scrollbar { width: 6px; }
+    .nda-terms-box::-webkit-scrollbar-track { background: transparent; }
+    .nda-terms-box::-webkit-scrollbar-thumb { background: var(--navy-600); border-radius: 3px; }
+    .nda-terms-box h3 {
+      font-family: var(--font-display);
+      font-size: var(--text-lg);
+      color: var(--white);
+      margin-bottom: var(--space-4);
+      text-align: center;
+    }
+    .nda-terms-box h4 {
+      color: var(--white);
+      font-size: var(--text-sm);
+      font-weight: 600;
+      margin-top: var(--space-6);
+      margin-bottom: var(--space-2);
+    }
+    .nda-terms-box p { margin-bottom: var(--space-3); }
+    .nda-terms-box ul {
+      list-style: none;
+      padding-left: var(--space-4);
+      margin-bottom: var(--space-3);
+    }
+    .nda-terms-box ul li {
+      position: relative;
+      padding-left: var(--space-5);
+      margin-bottom: var(--space-2);
+    }
+    .nda-terms-box ul li::before {
+      content: '';
+      position: absolute;
+      left: 0; top: 0.6em;
+      width: 5px; height: 5px;
+      border-radius: 50%;
+      background: var(--accent);
+    }
+    .nda-terms-box .party-fill {
+      color: var(--accent);
+      font-weight: 600;
+    }
+    .nda-terms-box .section-label {
+      font-size: var(--text-xs);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--navy-500);
+      margin-top: var(--space-6);
+      margin-bottom: var(--space-2);
+    }
+
+    /* ===== CHECKBOX ===== */
+    .agree-row {
+      display: flex;
+      align-items: flex-start;
+      gap: var(--space-3);
+      padding: var(--space-4) var(--space-5);
+      background: rgba(37, 99, 235, 0.06);
+      border: 1px solid rgba(37, 99, 235, 0.15);
+      border-radius: 10px;
+      margin-bottom: var(--space-6);
+      cursor: pointer;
+    }
+    .agree-row input[type="checkbox"] {
+      width: 20px; height: 20px;
+      margin-top: 2px;
+      accent-color: var(--accent);
+      cursor: pointer;
+      flex-shrink: 0;
+    }
+    .agree-row label {
+      font-size: var(--text-sm);
+      color: var(--navy-300);
+      cursor: pointer;
+      line-height: 1.5;
+    }
+    .agree-row label strong { color: var(--white); }
+
+    /* ===== BUTTONS ===== */
+    .btn-primary {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: var(--space-2);
+      width: 100%;
+      padding: var(--space-4) var(--space-8);
+      background: var(--accent);
+      color: var(--white);
+      font-family: var(--font-body);
+      font-size: var(--text-base);
+      font-weight: 600;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: background var(--transition), transform var(--transition);
+    }
+    .btn-primary:hover { background: var(--accent-hover); transform: translateY(-1px); }
+    .btn-primary:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+    .btn-nav {
+      display: flex; justify-content: space-between; align-items: center;
+      margin-top: var(--space-6);
+    }
+    .btn-back {
+      background: none; border: 1px solid var(--navy-700); color: var(--navy-300);
+      padding: var(--space-3) var(--space-6);
+      border-radius: 10px; cursor: pointer;
+      font-family: var(--font-body); font-size: var(--text-sm); font-weight: 500;
+      transition: all var(--transition);
+    }
+    .btn-back:hover { border-color: var(--navy-500); color: var(--white); }
+
+    /* ===== ERROR / STATUS ===== */
+    .form-error {
+      display: none;
+      background: rgba(239, 68, 68, 0.1);
+      border: 1px solid rgba(239, 68, 68, 0.3);
+      color: #fca5a5;
+      padding: var(--space-3) var(--space-4);
+      border-radius: 8px;
+      font-size: var(--text-sm);
+      margin-bottom: var(--space-4);
+    }
+
+    /* ===== SUCCESS STATE ===== */
+    .success-state {
+      display: none;
+      text-align: center;
+      padding: var(--space-12) var(--space-6);
+    }
+    .success-icon {
+      width: 72px; height: 72px;
+      border-radius: 50%;
+      background: rgba(34, 197, 94, 0.12);
+      display: flex; align-items: center; justify-content: center;
+      margin: 0 auto var(--space-6);
+    }
+    .success-state h2 {
+      font-family: var(--font-display);
+      font-size: var(--text-xl);
+      color: var(--white);
+      margin-bottom: var(--space-3);
+    }
+    .success-state p {
+      color: var(--navy-400);
+      font-size: var(--text-base);
+      margin-bottom: var(--space-8);
+      max-width: 480px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    .access-links {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: var(--space-4);
+      max-width: 520px;
+      margin: 0 auto var(--space-8);
+    }
+    .access-link {
+      display: flex; flex-direction: column; align-items: center;
+      gap: var(--space-3);
+      padding: var(--space-6) var(--space-4);
+      background: var(--navy-800);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 12px;
+      text-decoration: none;
+      color: var(--white);
+      transition: all var(--transition);
+    }
+    .access-link:hover {
+      border-color: var(--accent);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(37, 99, 235, 0.15);
+    }
+    .access-link svg { color: var(--accent); }
+    .access-link span {
+      font-weight: 600;
+      font-size: var(--text-sm);
+    }
+    .access-link small {
+      font-size: var(--text-xs);
+      color: var(--navy-400);
+    }
+    .download-nda {
+      display: inline-flex; align-items: center; gap: var(--space-2);
+      color: var(--navy-400);
+      font-size: var(--text-xs);
+      text-decoration: none;
+      transition: color var(--transition);
+    }
+    .download-nda:hover { color: var(--accent); }
+
+    /* ===== FOOTER ===== */
+    footer {
+      border-top: 1px solid rgba(255,255,255,0.06);
+      padding: var(--space-6);
+    }
+    .footer-inner {
+      max-width: 860px;
+      margin: 0 auto;
+      display: flex; justify-content: space-between; align-items: center;
+      font-size: var(--text-xs); color: var(--navy-600);
+    }
+    .footer-inner a { color: var(--navy-500); text-decoration: none; }
+    .footer-inner a:hover { color: var(--accent); }
+
+    /* ===== SECTIONS TOGGLE ===== */
+    .section-hidden { display: none; }
+
+    /* ===== RESPONSIVE ===== */
+    @media (max-width: 640px) {
+      .form-row { grid-template-columns: 1fr; }
+      .steps { gap: var(--space-4); flex-wrap: wrap; justify-content: center; }
+      .step span { display: none; }
+      .card { padding: var(--space-6); }
+      .nda-terms-box { padding: var(--space-4); max-height: 320px; }
+      .access-links { grid-template-columns: 1fr; }
+      .btn-nav { flex-direction: column-reverse; gap: var(--space-3); }
+      .btn-back { width: 100%; text-align: center; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav class="nav">
+    <a href="#" class="nav-brand">
+      <svg width="32" height="32" viewBox="0 0 40 40" fill="none">
+        <rect width="40" height="40" rx="10" fill="#2563eb"/>
+        <path d="M12 28V18l8-6 8 6v10" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+        <path d="M17 28v-6h6v6" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+      SRE <span>Analytics</span>
+    </a>
+  </nav>
+
+  <main class="main">
+
+    <!-- HEADER -->
+    <div class="page-header">
+      <div class="badge">Confidentiality Required</div>
+      <h1>Non-Disclosure Agreement</h1>
+      <p>Before accessing SRE Analytics product demos and investor materials, please review and sign our mutual NDA.</p>
+    </div>
+
+    <!-- STEPS -->
+    <div class="steps">
+      <div class="step active" id="step-ind-1">
+        <div class="step-num">1</div>
+        <span>Your Info</span>
+      </div>
+      <div class="step" id="step-ind-2">
+        <div class="step-num">2</div>
+        <span>Review NDA</span>
+      </div>
+      <div class="step" id="step-ind-3">
+        <div class="step-num">3</div>
+        <span>Sign</span>
+      </div>
+    </div>
+
+    <!-- STEP 1: YOUR INFO -->
+    <div class="card" id="step-1">
+      <h2 style="font-family:var(--font-display);font-size:var(--text-lg);color:var(--white);margin-bottom:var(--space-6)">Your Information</h2>
+      <div class="form-error" id="step1-error"></div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label" for="nda-name">Full Legal Name *</label>
+          <input type="text" class="form-input" id="nda-name" placeholder="Jane Smith" required>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="nda-email">Email *</label>
+          <input type="email" class="form-input" id="nda-email" placeholder="jane@company.com" required>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label" for="nda-title">Title</label>
+          <input type="text" class="form-input" id="nda-title" placeholder="VP of Real Estate">
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="nda-company">Company</label>
+          <input type="text" class="form-input" id="nda-company" placeholder="Acme Corp">
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label" for="nda-purpose">Purpose of Review</label>
+        <select class="form-input" id="nda-purpose" style="cursor:pointer;">
+          <option value="product_demo">Product Demo / Evaluation</option>
+          <option value="investment">Investment Discussion</option>
+          <option value="partnership">Partnership Exploration</option>
+          <option value="advisory">Advisory / Consulting</option>
+          <option value="other">Other</option>
+        </select>
+      </div>
+      <div class="btn-nav" style="justify-content:flex-end">
+        <button class="btn-primary" style="width:auto;padding:var(--space-3) var(--space-8)" onclick="goToStep(2)">Continue to NDA Review</button>
+      </div>
+    </div>
+
+    <!-- STEP 2: REVIEW NDA -->
+    <div class="card section-hidden" id="step-2">
+      <h2 style="font-family:var(--font-display);font-size:var(--text-lg);color:var(--white);margin-bottom:var(--space-2)">Review Agreement</h2>
+      <p style="font-size:var(--text-sm);color:var(--navy-400);margin-bottom:var(--space-6)">Please read the full agreement below. Your name and details will be filled in automatically.</p>
+
+      <div class="nda-terms-box" id="nda-scroll-box">
+        <h3>Mutual Non-Disclosure Agreement</h3>
+        <p style="text-align:center;color:var(--navy-400);font-size:var(--text-xs);margin-bottom:var(--space-6)">(Confidential Information Protection)</p>
+
+        <p><strong style="color:var(--white)">Effective Date:</strong> <span class="party-fill" id="nda-date-display"></span></p>
+
+        <p>This Mutual Non-Disclosure Agreement (this "Agreement") is entered into as of the Effective Date set forth above, by and between:</p>
+
+        <p><strong style="color:var(--white)">Party A:</strong> Scott Moitoza, an individual residing in the State of California, operating under the trade name SRE Analytics (d/b/a SRE Analytics).</p>
+        <p style="font-size:var(--text-xs);color:var(--navy-500)">Email: samoitoza@gmail.com</p>
+
+        <p><strong style="color:var(--white)">Party B:</strong> <span class="party-fill" id="nda-partyb-name">---</span></p>
+        <p style="font-size:var(--text-xs);color:var(--navy-500)">Title: <span class="party-fill" id="nda-partyb-title">---</span><br>Company: <span class="party-fill" id="nda-partyb-company">---</span><br>Email: <span class="party-fill" id="nda-partyb-email">---</span></p>
+
+        <p>Each a "Party" and collectively the "Parties."</p>
+
+        <div class="section-label">Recitals</div>
+        <p>The Parties wish to explore a potential business relationship related to commercial real estate analytics technology, including but not limited to product demonstrations, investment discussions, and strategic collaborations (the "Purpose"). In connection with this Purpose, each Party may disclose certain confidential and proprietary information to the other Party.</p>
+
+        <h4>1. Definition of Confidential Information</h4>
+        <p>"Confidential Information" means any non-public information disclosed by one Party (the "Disclosing Party") to the other Party (the "Receiving Party"), whether in oral, written, electronic, or visual form, including but not limited to:</p>
+        <ul>
+          <li>Software, source code, algorithms, data models, product designs, and technical documentation;</li>
+          <li>Business plans, financial projections, pricing models, and revenue data;</li>
+          <li>Client lists, prospect lists, and customer data;</li>
+          <li>Proprietary methodologies, trade secrets, and know-how;</li>
+          <li>Marketing strategies, competitive analyses, and go-to-market plans;</li>
+          <li>Any materials, demos, or prototypes shared during product demonstrations.</li>
+        </ul>
+
+        <h4>2. Exclusions from Confidential Information</h4>
+        <p>Confidential Information does not include information that:</p>
+        <ul>
+          <li>Is or becomes publicly available through no fault of the Receiving Party;</li>
+          <li>Was already known to the Receiving Party prior to disclosure, as demonstrated by written records;</li>
+          <li>Is independently developed by the Receiving Party without use of or reference to the Disclosing Party's Confidential Information;</li>
+          <li>Is rightfully received from a third party without restriction on disclosure; or</li>
+          <li>Is required to be disclosed by law, regulation, or legal process, provided that the Receiving Party gives the Disclosing Party prompt written notice.</li>
+        </ul>
+
+        <h4>3. Obligations of the Receiving Party</h4>
+        <p>The Receiving Party agrees to:</p>
+        <ul>
+          <li>Use the Confidential Information solely for the Purpose and not for any other purpose;</li>
+          <li>Protect the Confidential Information with at least the same degree of care it uses to protect its own confidential information, but no less than reasonable care;</li>
+          <li>Limit disclosure of Confidential Information to its employees, contractors, advisors, and professional consultants who have a need to know and are bound by confidentiality obligations no less restrictive than those herein;</li>
+          <li>Not disclose Confidential Information to any third party without the prior written consent of the Disclosing Party;</li>
+          <li>Promptly notify the Disclosing Party in writing upon discovery of any unauthorized use or disclosure of Confidential Information.</li>
+        </ul>
+
+        <h4>4. Term and Duration</h4>
+        <p>This Agreement is effective as of the Effective Date and continues for a period of two (2) years unless terminated earlier by either Party with thirty (30) days written notice. The confidentiality obligations in this Agreement survive termination for a period of three (3) years.</p>
+
+        <h4>5. Return and Destruction of Materials</h4>
+        <p>Upon termination of this Agreement or upon written request by the Disclosing Party, the Receiving Party will promptly return or destroy all materials containing Confidential Information and certify such destruction in writing upon request.</p>
+
+        <h4>6. No License or Rights Granted</h4>
+        <p>Nothing in this Agreement grants the Receiving Party any license, title, or interest in or to any Confidential Information or intellectual property of the Disclosing Party.</p>
+
+        <h4>7. No Obligation to Proceed</h4>
+        <p>Nothing in this Agreement obligates either Party to enter into any further agreement, transaction, or business relationship.</p>
+
+        <h4>8. Remedies</h4>
+        <p>Each Party acknowledges that a breach of this Agreement may cause irreparable harm to the Disclosing Party for which monetary damages would be inadequate. Accordingly, the Disclosing Party is entitled to seek equitable relief, including injunction and specific performance, in addition to all other remedies available at law or in equity.</p>
+
+        <h4>9. Governing Law and Jurisdiction</h4>
+        <p>This Agreement will be governed by and construed in accordance with the laws of the State of California, without regard to its conflict of laws principles. Any dispute arising under this Agreement will be subject to the exclusive jurisdiction of the state and federal courts located in Santa Barbara County, California.</p>
+
+        <h4>10. General Provisions</h4>
+        <ul>
+          <li><strong style="color:var(--white)">Entire Agreement.</strong> This Agreement constitutes the entire agreement between the Parties with respect to the subject matter hereof.</li>
+          <li><strong style="color:var(--white)">Amendment.</strong> This Agreement may not be amended or modified except by a written instrument signed by both Parties.</li>
+          <li><strong style="color:var(--white)">Assignment.</strong> Neither Party may assign this Agreement without the prior written consent of the other Party.</li>
+          <li><strong style="color:var(--white)">Severability.</strong> If any provision of this Agreement is found to be invalid or unenforceable, the remaining provisions will continue in full force and effect.</li>
+          <li><strong style="color:var(--white)">Waiver.</strong> A waiver of any breach of this Agreement will not constitute a waiver of any subsequent breach.</li>
+          <li><strong style="color:var(--white)">Counterparts.</strong> This Agreement may be executed in counterparts, including by electronic signature, each of which will be deemed an original.</li>
+          <li><strong style="color:var(--white)">Notices.</strong> All notices under this Agreement will be in writing and sent to the email addresses listed above.</li>
+        </ul>
+      </div>
+
+      <div class="btn-nav">
+        <button class="btn-back" onclick="goToStep(1)">Back</button>
+        <button class="btn-primary" style="width:auto;padding:var(--space-3) var(--space-8)" onclick="goToStep(3)">I've Read the Agreement</button>
+      </div>
+    </div>
+
+    <!-- STEP 3: SIGN -->
+    <div class="card section-hidden" id="step-3">
+      <h2 style="font-family:var(--font-display);font-size:var(--text-lg);color:var(--white);margin-bottom:var(--space-2)">Sign Agreement</h2>
+      <p style="font-size:var(--text-sm);color:var(--navy-400);margin-bottom:var(--space-6)">By checking the box below and clicking "Sign NDA", you are executing this agreement with a legally binding electronic signature.</p>
+
+      <div style="background:var(--navy-800);border-radius:10px;padding:var(--space-5);margin-bottom:var(--space-6)">
+        <div style="display:flex;justify-content:space-between;font-size:var(--text-sm);margin-bottom:var(--space-3)">
+          <span style="color:var(--navy-400)">Signing as:</span>
+          <span style="color:var(--white);font-weight:600" id="sign-name-display"></span>
+        </div>
+        <div style="display:flex;justify-content:space-between;font-size:var(--text-sm);margin-bottom:var(--space-3)">
+          <span style="color:var(--navy-400)">Email:</span>
+          <span style="color:var(--white)" id="sign-email-display"></span>
+        </div>
+        <div style="display:flex;justify-content:space-between;font-size:var(--text-sm);margin-bottom:var(--space-3)">
+          <span style="color:var(--navy-400)">Company:</span>
+          <span style="color:var(--white)" id="sign-company-display"></span>
+        </div>
+        <div style="display:flex;justify-content:space-between;font-size:var(--text-sm)">
+          <span style="color:var(--navy-400)">Date:</span>
+          <span style="color:var(--white)" id="sign-date-display"></span>
+        </div>
+      </div>
+
+      <div class="form-error" id="sign-error"></div>
+
+      <div class="agree-row" onclick="document.getElementById('agree-check').click()">
+        <input type="checkbox" id="agree-check" onclick="event.stopPropagation()">
+        <label for="agree-check" onclick="event.stopPropagation()">I, <strong id="sign-name-inline"></strong>, have read and agree to the terms of this Mutual Non-Disclosure Agreement. I understand this constitutes a <strong>legally binding electronic signature</strong> under the ESIGN Act and UETA.</label>
+      </div>
+
+      <button class="btn-primary" id="sign-btn" disabled onclick="submitNDA()">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+        Sign NDA
+      </button>
+      <p style="font-size:var(--text-xs);color:var(--navy-600);text-align:center;margin-top:var(--space-3)">Your signature and agreement details are securely stored.</p>
+
+      <div class="btn-nav" style="margin-top:var(--space-4)">
+        <button class="btn-back" onclick="goToStep(2)">Back to Review</button>
+        <div></div>
+      </div>
+    </div>
+
+    <!-- SUCCESS STATE -->
+    <div class="success-state" id="success-state">
+      <div class="success-icon">
+        <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="#22c55e" stroke-width="2.5"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+      </div>
+      <h2>NDA Signed Successfully</h2>
+      <p>Thank you for signing. You now have access to SRE Analytics product demos and investor materials.</p>
+      <div class="access-links">
+        <a class="access-link" id="link-product" href="#" target="_blank">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="9" y1="21" x2="9" y2="9"/></svg>
+          <span>Product Demo</span>
+          <small>Interactive map, Tour Book, analysis</small>
+        </a>
+        <a class="access-link" id="link-investor" href="#" target="_blank">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+          <span>Investor Page</span>
+          <small>Market opportunity, business model</small>
+        </a>
+      </div>
+      <p style="font-size:var(--text-xs);color:var(--navy-500);margin-bottom:var(--space-4)">A copy of the signed NDA has been recorded. Confirmation sent to <strong id="success-email" style="color:var(--navy-300)"></strong>.</p>
+    </div>
+
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+      <div>&copy; 2026 SRE Analytics. All rights reserved.</div>
+      <a href="https://www.perplexity.ai/computer" target="_blank" rel="noopener noreferrer">Created with Perplexity Computer</a>
+    </div>
+  </footer>
+
+  <script>
+    // ===== CONFIG =====
+    const SUPABASE_URL = 'https://lsckcmvoqmwxovqejvyl.supabase.co';
+    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImxzY2tjbXZvcW13eG92cWVqdnlsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzMzMzYxMzYsImV4cCI6MjA4ODkxMjEzNn0.JT3c9zakHYv0mIJmflLk15NXlaLoqvSYAPro4lr6eDs';
+
+    // Base URLs for gated pages
+    const PRODUCT_BASE = 'https://smoitoza.github.io/procore-sf-survey/sre.html';
+    const INVESTOR_BASE = 'https://smoitoza.github.io/procore-sf-survey/investors.html';
+
+    let currentStep = 1;
+
+    // ===== STEP NAVIGATION =====
+    function goToStep(step) {
+      // Validate step 1 before moving forward
+      if (step > 1 && currentStep === 1) {
+        const name = document.getElementById('nda-name').value.trim();
+        const email = document.getElementById('nda-email').value.trim();
+        if (!name || !email) {
+          const err = document.getElementById('step1-error');
+          err.textContent = 'Please enter your full name and email address.';
+          err.style.display = 'block';
+          return;
+        }
+        if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+          const err = document.getElementById('step1-error');
+          err.textContent = 'Please enter a valid email address.';
+          err.style.display = 'block';
+          return;
+        }
+        document.getElementById('step1-error').style.display = 'none';
+      }
+
+      // Update step indicators
+      for (let i = 1; i <= 3; i++) {
+        const ind = document.getElementById('step-ind-' + i);
+        ind.classList.remove('active', 'completed');
+        if (i < step) ind.classList.add('completed');
+        if (i === step) ind.classList.add('active');
+      }
+
+      // Show/hide sections
+      for (let i = 1; i <= 3; i++) {
+        const el = document.getElementById('step-' + i);
+        if (i === step) el.classList.remove('section-hidden');
+        else el.classList.add('section-hidden');
+      }
+
+      // Populate NDA text with user details
+      if (step >= 2) {
+        const name = document.getElementById('nda-name').value.trim();
+        const email = document.getElementById('nda-email').value.trim();
+        const title = document.getElementById('nda-title').value.trim() || 'N/A';
+        const company = document.getElementById('nda-company').value.trim() || 'N/A';
+        const today = new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+
+        document.getElementById('nda-date-display').textContent = today;
+        document.getElementById('nda-partyb-name').textContent = name;
+        document.getElementById('nda-partyb-title').textContent = title;
+        document.getElementById('nda-partyb-company').textContent = company;
+        document.getElementById('nda-partyb-email').textContent = email;
+      }
+
+      // Populate sign step
+      if (step === 3) {
+        const name = document.getElementById('nda-name').value.trim();
+        const email = document.getElementById('nda-email').value.trim();
+        const company = document.getElementById('nda-company').value.trim() || 'N/A';
+        const today = new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+
+        document.getElementById('sign-name-display').textContent = name;
+        document.getElementById('sign-email-display').textContent = email;
+        document.getElementById('sign-company-display').textContent = company;
+        document.getElementById('sign-date-display').textContent = today;
+        document.getElementById('sign-name-inline').textContent = name;
+      }
+
+      currentStep = step;
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    // ===== CHECKBOX ENABLES SIGN BUTTON =====
+    document.getElementById('agree-check').addEventListener('change', function() {
+      document.getElementById('sign-btn').disabled = !this.checked;
+    });
+
+    // ===== GENERATE TOKEN =====
+    function generateToken() {
+      // Simple UUID v4 generator
+      return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+        const r = Math.random() * 16 | 0;
+        return (c === 'x' ? r : (r & 0x3 | 0x8)).toString(16);
+      });
+    }
+
+    // ===== SUBMIT NDA =====
+    async function submitNDA() {
+      const btn = document.getElementById('sign-btn');
+      const errorEl = document.getElementById('sign-error');
+      errorEl.style.display = 'none';
+      btn.disabled = true;
+      btn.innerHTML = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="animation:spin 1s linear infinite"><circle cx="12" cy="12" r="10"/></svg> Signing...';
+
+      const name = document.getElementById('nda-name').value.trim();
+      const email = document.getElementById('nda-email').value.trim();
+      const title = document.getElementById('nda-title').value.trim();
+      const company = document.getElementById('nda-company').value.trim();
+      const purpose = document.getElementById('nda-purpose').value;
+      const today = new Date().toISOString().split('T')[0];
+      const accessToken = generateToken();
+
+      // Compute expiration (2 years from today)
+      const expDate = new Date();
+      expDate.setFullYear(expDate.getFullYear() + 2);
+      const expirationDate = expDate.toISOString().split('T')[0];
+
+      const headers = {
+        'Content-Type': 'application/json',
+        'apikey': SUPABASE_ANON_KEY,
+        'Authorization': 'Bearer ' + SUPABASE_ANON_KEY,
+        'Prefer': 'return=representation'
+      };
+
+      try {
+        // Insert NDA signature record
+        const res = await fetch(SUPABASE_URL + '/rest/v1/nda_signatures', {
+          method: 'POST',
+          headers: headers,
+          body: JSON.stringify({
+            full_name: name,
+            email: email,
+            title: title || null,
+            company: company || null,
+            purpose: purpose.replace(/_/g, ' '),
+            nda_type: 'mutual',
+            status: 'signed',
+            signed_date: today,
+            effective_date: today,
+            expiration_date: expirationDate,
+            access_token: accessToken,
+            user_agent: navigator.userAgent
+          })
+        });
+
+        if (!res.ok) throw new Error('Failed to record signature');
+
+        // Show success + access links
+        document.getElementById('step-3').classList.add('section-hidden');
+        document.querySelector('.steps').style.display = 'none';
+
+        const successEl = document.getElementById('success-state');
+        successEl.style.display = 'block';
+        document.getElementById('success-email').textContent = email;
+
+        // Build gated URLs with token
+        document.getElementById('link-product').href = PRODUCT_BASE + '?nda=' + accessToken;
+        document.getElementById('link-investor').href = INVESTOR_BASE + '?nda=' + accessToken;
+
+      } catch (err) {
+        console.error(err);
+        errorEl.textContent = 'Something went wrong. Please try again or email samoitoza@gmail.com directly.';
+        errorEl.style.display = 'block';
+        btn.disabled = false;
+        btn.innerHTML = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg> Sign NDA';
+      }
+    }
+  </script>
+  <style>
+    @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+  </style>
+
+</body>
+</html>
