@@ -803,35 +803,61 @@
       color: #fff; letter-spacing: -0.02em;
       margin-bottom: var(--space-4);
     }
-    .cta-section p {
+    .cta-section > .container > p {
       font-size: var(--text-base); color: var(--navy-400);
       margin: 0 auto var(--space-8); max-width: 500px;
     }
-    .cta-email-group {
-      display: flex; gap: var(--space-3); justify-content: center;
+    .cta-form {
       max-width: 480px; margin: 0 auto;
+      display: flex; flex-direction: column; gap: var(--space-3);
     }
-    .cta-email-input {
+    .cta-form-row {
+      display: flex; gap: var(--space-3);
+    }
+    .cta-input {
       flex: 1; padding: var(--space-3) var(--space-5);
       background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.15);
       border-radius: var(--radius-lg); color: #fff;
-      font-size: var(--text-sm); outline: none;
+      font-family: inherit; font-size: var(--text-sm); outline: none;
       transition: border-color var(--transition);
     }
-    .cta-email-input::placeholder { color: var(--navy-500); }
-    .cta-email-input:focus { border-color: var(--accent); }
-    .cta-email-btn {
+    .cta-input::placeholder { color: var(--navy-500); }
+    .cta-input:focus { border-color: var(--accent); }
+    .cta-textarea {
+      flex: 1; padding: var(--space-3) var(--space-5);
+      background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.15);
+      border-radius: var(--radius-lg); color: #fff;
+      font-family: inherit; font-size: var(--text-sm); outline: none;
+      resize: vertical; min-height: 80px;
+      transition: border-color var(--transition);
+    }
+    .cta-textarea::placeholder { color: var(--navy-500); }
+    .cta-textarea:focus { border-color: var(--accent); }
+    .cta-submit-btn {
       background: var(--accent); color: #fff;
-      padding: var(--space-3) var(--space-6);
+      padding: var(--space-4) var(--space-6);
       border-radius: var(--radius-lg); font-weight: 600;
       font-size: var(--text-sm); border: none; cursor: pointer;
       white-space: nowrap;
-      transition: background var(--transition);
+      transition: background var(--transition), transform var(--transition);
     }
-    .cta-email-btn:hover { background: var(--accent-hover); }
-
+    .cta-submit-btn:hover { background: var(--accent-hover); transform: translateY(-1px); }
+    .cta-submit-btn:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+    .cta-success {
+      display: none; text-align: center;
+      padding: var(--space-6); border-radius: var(--radius-lg);
+      background: rgba(34,197,94,0.1); border: 1px solid rgba(34,197,94,0.3);
+    }
+    .cta-success h3 { color: #22c55e; font-size: var(--text-lg); margin-bottom: var(--space-2); }
+    .cta-success p { color: var(--navy-400); font-size: var(--text-sm); margin: 0; }
+    .cta-error {
+      display: none; padding: var(--space-3);
+      border-radius: var(--radius-md);
+      background: rgba(239,68,68,0.1); border: 1px solid rgba(239,68,68,0.3);
+      color: #ef4444; font-size: var(--text-xs); text-align: center;
+    }
     @media (max-width: 640px) {
-      .cta-email-group { flex-direction: column; }
+      .cta-form-row { flex-direction: column; }
     }
 
     /* ===== FOOTER ===== */
@@ -1758,10 +1784,20 @@
   <section class="cta-section" id="contact">
     <div class="container fade-up">
       <h2>Ready to see your data on a map?</h2>
-      <p>We're onboarding select CRE teams for private beta. Leave your email and we'll reach out.</p>
-      <div class="cta-email-group">
-        <input type="email" class="cta-email-input" placeholder="your@email.com">
-        <button class="cta-email-btn" onclick="handleSignup()">Get Early Access</button>
+      <p>We're onboarding select CRE teams for private beta. Tell us about your team and we'll reach out.</p>
+      <form class="cta-form" id="demo-form" onsubmit="handleDemoRequest(event)">
+        <div class="cta-form-row">
+          <input type="text" class="cta-input" id="demo-name" placeholder="Full name" required>
+          <input type="email" class="cta-input" id="demo-email" placeholder="Work email" required>
+        </div>
+        <input type="text" class="cta-input" id="demo-company" placeholder="Company (optional)">
+        <textarea class="cta-textarea" id="demo-message" placeholder="Tell us about your use case (optional)"></textarea>
+        <button type="submit" class="cta-submit-btn" id="demo-submit-btn">Request Demo</button>
+        <div class="cta-error" id="demo-error"></div>
+      </form>
+      <div class="cta-success" id="demo-success">
+        <h3>You're on the list.</h3>
+        <p>We'll reach out within 24 hours to schedule a walkthrough.</p>
       </div>
       <p style="font-size:var(--text-xs);color:var(--navy-600);margin-top:var(--space-4)">No credit card required. We'll be in touch within 24 hours.</p>
     </div>
@@ -1795,20 +1831,57 @@
     }, { threshold: 0.15 });
     document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
 
-    // Sign up handler (placeholder)
-    function handleSignup() {
-      const input = document.querySelector('.cta-email-input');
-      const email = input.value.trim();
-      if (!email || !email.includes('@')) {
-        input.style.borderColor = '#ef4444';
-        setTimeout(() => input.style.borderColor = '', 2000);
-        return;
-      }
-      const btn = document.querySelector('.cta-email-btn');
-      btn.textContent = 'You\'re on the list!';
-      btn.style.background = '#22c55e';
-      input.disabled = true;
+    // Supabase demo request handler
+    const SUPABASE_URL = 'https://lsckcmvoqmwxovqejvyl.supabase.co';
+    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImxzY2tjbXZvcW13eG92cWVqdnlsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzMzMzYxMzYsImV4cCI6MjA4ODkxMjEzNn0.JT3c9zakHYv0mIJmflLk15NXlaLoqvSYAPro4lr6eDs';
+
+    async function handleDemoRequest(e) {
+      e.preventDefault();
+      const btn = document.getElementById('demo-submit-btn');
+      const errorEl = document.getElementById('demo-error');
+      const form = document.getElementById('demo-form');
+      const successEl = document.getElementById('demo-success');
+
+      const fullName = document.getElementById('demo-name').value.trim();
+      const email = document.getElementById('demo-email').value.trim();
+      const company = document.getElementById('demo-company').value.trim();
+      const message = document.getElementById('demo-message').value.trim();
+
+      errorEl.style.display = 'none';
       btn.disabled = true;
+      btn.textContent = 'Sending...';
+
+      try {
+        const res = await fetch(SUPABASE_URL + '/rest/v1/demo_requests', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'apikey': SUPABASE_ANON_KEY,
+            'Authorization': 'Bearer ' + SUPABASE_ANON_KEY,
+            'Prefer': 'return=minimal'
+          },
+          body: JSON.stringify({
+            full_name: fullName,
+            email: email,
+            company: company || null,
+            message: message || null,
+            source: 'website'
+          })
+        });
+
+        if (!res.ok) {
+          throw new Error('Request failed');
+        }
+
+        // Success
+        form.style.display = 'none';
+        successEl.style.display = 'block';
+      } catch (err) {
+        errorEl.textContent = 'Something went wrong. Please email samoitoza@gmail.com directly.';
+        errorEl.style.display = 'block';
+        btn.disabled = false;
+        btn.textContent = 'Request Demo';
+      }
     }
 
     // Financial tabs
