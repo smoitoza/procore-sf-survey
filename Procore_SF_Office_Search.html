@@ -4906,7 +4906,14 @@ function renderTourBook() {
   const container = document.getElementById('tourbookContainer');
   const list = getTourList();
   const data = getTourBookData();
-  
+
+  // Remember which cards are currently expanded so we can restore state after re-render
+  var expandedCards = {};
+  document.querySelectorAll('.tourbook-card.expanded').forEach(function(el) {
+    expandedCards[el.id.replace('tb-card-', '')] = true;
+  });
+  var hasExistingCards = document.querySelectorAll('.tourbook-card').length > 0;
+
   if (list.length === 0) {
     container.innerHTML = 
       '<div class="tourbook-empty">' +
@@ -4936,7 +4943,7 @@ function renderTourBook() {
     const isFirst = idx === 0;
     
     html += 
-      '<div class="tourbook-card' + (isFirst ? ' expanded' : '') + '" id="tb-card-' + key + '">' +
+      '<div class="tourbook-card' + (hasExistingCards ? (expandedCards[key] ? ' expanded' : '') : (isFirst ? ' expanded' : '')) + '" id="tb-card-' + key + '">' +
         '<div class="tourbook-card-header" onclick="toggleTourBookCard(\'' + key + '\')">' +
           '<div class="tourbook-card-dot" style="background:' + (item.color || '#9ca3af') + '"></div>' +
           '<div style="flex:1;">' +
