@@ -2111,7 +2111,13 @@ body {
   color: var(--color-text-muted);
 }
 
-.chat-clear-btn {
+.chat-header-actions {
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+}
+
+.chat-action-btn {
   background: none;
   border: none;
   color: var(--color-text-faint);
@@ -2124,9 +2130,21 @@ body {
   justify-content: center;
 }
 
-.chat-clear-btn:hover {
+.chat-action-btn:hover {
   color: var(--color-text-muted);
   background: var(--color-surface-2);
+}
+
+/* Expanded mode */
+.chat-panel.expanded {
+  width: 620px;
+  max-height: calc(100dvh - 100px);
+  bottom: 20px;
+}
+
+.chat-panel.expanded .chat-messages {
+  max-height: 600px;
+  min-height: 400px;
 }
 
 .chat-messages {
@@ -2385,6 +2403,18 @@ body {
     right: 12px;
     bottom: 76px;
     max-height: calc(100dvh - 100px);
+  }
+
+  .chat-panel.expanded {
+    width: calc(100vw - 12px);
+    right: 6px;
+    bottom: 6px;
+    max-height: calc(100dvh - 12px);
+    border-radius: var(--radius-lg);
+  }
+
+  .chat-panel.expanded .chat-messages {
+    max-height: calc(100dvh - 160px);
   }
   
   .chat-fab {
@@ -5070,11 +5100,21 @@ function switchFinSheet(sheetId) {
         <div class="chat-header-sub">Ask about any building</div>
       </div>
     </div>
-    <button class="chat-clear-btn" id="chatClearBtn" title="Clear conversation">
-      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
-        <path stroke-linecap="round" stroke-linejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0 3.181 3.183a8.25 8.25 0 0 0 13.803-3.7M4.031 9.865a8.25 8.25 0 0 1 13.803-3.7l3.181 3.182" />
-      </svg>
-    </button>
+    <div class="chat-header-actions">
+      <button class="chat-action-btn" id="chatExpandBtn" title="Expand chat">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" id="expandIcon">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 3.75v4.5m0-4.5h4.5m-4.5 0L9 9M3.75 20.25v-4.5m0 4.5h4.5m-4.5 0L9 15M20.25 3.75h-4.5m4.5 0v4.5m0-4.5L15 9m5.25 11.25h-4.5m4.5 0v-4.5m0 4.5L15 15" />
+        </svg>
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" id="collapseIcon" style="display:none;">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M9 9V4.5M9 9H4.5M9 9 3.75 3.75M9 15v4.5M9 15H4.5M9 15l-5.25 5.25M15 9h4.5M15 9V4.5M15 9l5.25-5.25M15 15h4.5M15 15v4.5m0-4.5 5.25 5.25" />
+        </svg>
+      </button>
+      <button class="chat-action-btn" id="chatClearBtn" title="Clear conversation">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0 3.181 3.183a8.25 8.25 0 0 0 13.803-3.7M4.031 9.865a8.25 8.25 0 0 1 13.803-3.7l3.181 3.182" />
+        </svg>
+      </button>
+    </div>
   </div>
 
   <div class="chat-messages" id="chatMessages">
@@ -5119,8 +5159,12 @@ function switchFinSheet(sheetId) {
   const input = document.getElementById('chatInput');
   const sendBtn = document.getElementById('chatSendBtn');
   const clearBtn = document.getElementById('chatClearBtn');
+  const expandBtn = document.getElementById('chatExpandBtn');
+  const expandIcon = document.getElementById('expandIcon');
+  const collapseIcon = document.getElementById('collapseIcon');
 
   let isOpen = false;
+  let isExpanded = false;
   let isStreaming = false;
   let visitorId = 'v_' + Math.random().toString(36).slice(2, 10);
 
@@ -5132,6 +5176,16 @@ function switchFinSheet(sheetId) {
     if (isOpen) {
       setTimeout(() => input.focus(), 250);
     }
+  });
+
+  // Expand/collapse toggle
+  expandBtn.addEventListener('click', () => {
+    isExpanded = !isExpanded;
+    panel.classList.toggle('expanded', isExpanded);
+    expandIcon.style.display = isExpanded ? 'none' : '';
+    collapseIcon.style.display = isExpanded ? '' : 'none';
+    expandBtn.title = isExpanded ? 'Collapse chat' : 'Expand chat';
+    scrollToBottom();
   });
 
   // Suggestion buttons
