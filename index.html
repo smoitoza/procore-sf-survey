@@ -5380,6 +5380,9 @@ function renderTourBook() {
   
   // Render global attendees chips
   renderGlobalAttendees();
+  
+  // Set up drag-drop delegation on container (once)
+  initDragDropDelegation();
 }
 
 function removeFromTourBook(type, id, name) {
@@ -5606,39 +5609,88 @@ async function sendTourInvites() {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ invites: invites })
     });
+    if (!response.ok) throw new Error('Backend not available');
     var result = await response.json();
     
     if (result.success) {
-      btn.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> Invites Sent';
-      btn.classList.add('sent');
-      if (statusEl) {
-        statusEl.className = 'tourbook-invite-status success';
-        statusEl.innerHTML = '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> ' + result.message;
-        statusEl.style.display = 'inline-flex';
-      }
-      // Reset button after 5s
-      setTimeout(function() {
-        btn.disabled = false;
-        btn.classList.remove('sent');
-        btn.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22 6 12 13 2 6"/></svg> Send Calendar Invites';
-        updateSendInvitesBtnState();
-      }, 5000);
+      showInviteSuccess(btn, statusEl, result.message);
     } else {
       throw new Error(result.error || 'Failed to send invites');
     }
   } catch(err) {
-    btn.disabled = false;
-    btn.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22 6 12 13 2 6"/></svg> Send Calendar Invites';
-    if (statusEl) {
-      statusEl.className = 'tourbook-invite-status error';
-      statusEl.innerHTML = '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg> ' + err.message;
-      statusEl.style.display = 'inline-flex';
-    }
+    // Backend not available (e.g. static deploy) -- use Google Calendar link fallback
+    generateCalendarLinks(invites, btn, statusEl);
   }
 }
 
-// --- Drag and Drop ---
+function showInviteSuccess(btn, statusEl, message) {
+  btn.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> Invites Sent';
+  btn.classList.add('sent');
+  if (statusEl) {
+    statusEl.className = 'tourbook-invite-status success';
+    statusEl.innerHTML = '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> ' + message;
+    statusEl.style.display = 'inline-flex';
+  }
+  setTimeout(function() {
+    btn.disabled = false;
+    btn.classList.remove('sent');
+    btn.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22 6 12 13 2 6"/></svg> Send Calendar Invites';
+    updateSendInvitesBtnState();
+  }, 5000);
+}
+
+function generateCalendarLinks(invites, btn, statusEl) {
+  // Generate Google Calendar links for each tour and open them
+  var opened = 0;
+  invites.forEach(function(inv, idx) {
+    var startDT = inv.date + 'T' + inv.time + ':00';
+    // Assume 1-hour tours
+    var startH = parseInt(inv.time.split(':')[0]);
+    var startM = inv.time.split(':')[1];
+    var endH = startH + 1;
+    var endTime = (endH < 10 ? '0' : '') + endH + ':' + startM;
+    var endDT = inv.date + 'T' + endTime + ':00';
+    
+    // Format for Google Calendar URL (YYYYMMDDTHHMMSS)
+    var startFmt = inv.date.replace(/-/g, '') + 'T' + inv.time.replace(':', '') + '00';
+    var endFmt = inv.date.replace(/-/g, '') + 'T' + endTime.replace(':', '') + '00';
+    
+    var title = encodeURIComponent('Office Tour: ' + inv.building);
+    var details = encodeURIComponent('Office tour of ' + inv.building + '\n' + inv.address + '\n\nSF Office Search Tour Book');
+    var location = encodeURIComponent(inv.address);
+    var attendeeStr = inv.attendees.map(function(e) { return encodeURIComponent(e); }).join(',');
+    
+    var url = 'https://calendar.google.com/calendar/r/eventedit?' +
+      'text=' + title +
+      '&dates=' + startFmt + '/' + endFmt +
+      '&details=' + details +
+      '&location=' + location +
+      '&add=' + attendeeStr;
+    
+    // Open first one immediately, others with delay to avoid popup blocking
+    setTimeout(function() {
+      window.open(url, '_blank');
+    }, idx * 600);
+    opened++;
+  });
+  
+  showInviteSuccess(btn, statusEl, opened + ' Google Calendar event' + (opened !== 1 ? 's' : '') + ' opened. Add attendees and save to send invites.');
+}
+
+// --- Drag and Drop (event-delegation on container) ---
 var dragSrcKey = null;
+
+function getCardKeyFromEvent(e) {
+  // Walk up from event target to find the .tourbook-card with an id
+  var el = e.target;
+  while (el && el !== document) {
+    if (el.classList && el.classList.contains('tourbook-card') && el.id) {
+      return el.id.replace('tb-card-', '');
+    }
+    el = el.parentElement;
+  }
+  return null;
+}
 
 function handleDragStart(e, key) {
   dragSrcKey = key;
@@ -5689,6 +5741,43 @@ function handleDragEnd(e) {
     c.classList.remove('drag-over');
   });
   dragSrcKey = null;
+}
+
+// Container-level delegation: catches dragover/drop on ALL child elements
+// This fixes the bug where drop doesn't fire when mouse is over inner elements
+function initDragDropDelegation() {
+  var container = document.getElementById('tourbookContainer');
+  if (!container || container._dragDelegated) return;
+  container._dragDelegated = true;
+  
+  container.addEventListener('dragover', function(e) {
+    e.preventDefault();
+    e.dataTransfer.dropEffect = 'move';
+    var key = getCardKeyFromEvent(e);
+    if (!key || key === dragSrcKey) return;
+    document.querySelectorAll('.tourbook-card').forEach(function(c) { c.classList.remove('drag-over'); });
+    var card = document.getElementById('tb-card-' + key);
+    if (card) card.classList.add('drag-over');
+  });
+  
+  container.addEventListener('drop', function(e) {
+    e.preventDefault();
+    var key = getCardKeyFromEvent(e);
+    document.querySelectorAll('.tourbook-card').forEach(function(c) {
+      c.classList.remove('dragging');
+      c.classList.remove('drag-over');
+    });
+    if (!key || dragSrcKey === key || !dragSrcKey) return;
+    var list = getTourList();
+    var srcIdx = list.findIndex(function(item) { return getBuildingKey(item) === dragSrcKey; });
+    var destIdx = list.findIndex(function(item) { return getBuildingKey(item) === key; });
+    if (srcIdx < 0 || destIdx < 0) return;
+    var moved = list.splice(srcIdx, 1)[0];
+    list.splice(destIdx, 0, moved);
+    saveTourList(list);
+    renderTourBook();
+    dragSrcKey = null;
+  });
 }
 
 function exportTourBook() {
