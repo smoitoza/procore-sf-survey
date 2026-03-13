@@ -4735,22 +4735,22 @@ const SCORE_CATEGORIES = [
 
 function getTourBookData() {
   try {
-    return JSON.parse(_storeApi.getItem(TOURBOOK_KEY)) || {};
+    return JSON.parse(_storeApi.getItem('sf-office-tourbook')) || {};
   } catch(e) { return {}; }
 }
 
 function saveTourBookData(data) {
-  _storeApi.setItem(TOURBOOK_KEY, JSON.stringify(data));
+  _storeApi.setItem('sf-office-tourbook', JSON.stringify(data));
 }
 
 function getTourBookPhotos() {
   try {
-    return JSON.parse(_storeApi.getItem(TOURBOOK_PHOTOS_KEY)) || {};
+    return JSON.parse(_storeApi.getItem('sf-office-tourbook-photos')) || {};
   } catch(e) { return {}; }
 }
 
 function saveTourBookPhotos(photos) {
-  _storeApi.setItem(TOURBOOK_PHOTOS_KEY, JSON.stringify(photos));
+  _storeApi.setItem('sf-office-tourbook-photos', JSON.stringify(photos));
 }
 
 function getBuildingKey(item) {
@@ -5333,7 +5333,12 @@ function switchFinSheet(sheetId) {
       const resp = await fetch(API + '/api/chat', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ message: text, visitor_id: visitorId })
+        body: JSON.stringify({
+          message: text,
+          visitor_id: visitorId,
+          tour_list: getTourList(),
+          scores: getTourBookData()
+        })
       });
 
       if (!resp.ok) throw new Error('Server error: ' + resp.status);
