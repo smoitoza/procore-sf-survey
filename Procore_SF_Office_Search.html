@@ -2003,6 +2003,402 @@ body {
       .fin-table .cell-label { min-width: 140px; }
     }
 
+/* ============================================================
+   AI Chat Panel
+   ============================================================ */
+
+.chat-fab {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  background: var(--color-primary);
+  color: white;
+  border: none;
+  cursor: pointer;
+  box-shadow: 0 4px 16px rgba(244, 121, 32, 0.35);
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all var(--transition);
+}
+
+.chat-fab:hover {
+  background: var(--color-primary-hover);
+  transform: scale(1.08);
+  box-shadow: 0 6px 24px rgba(244, 121, 32, 0.45);
+}
+
+.chat-fab svg {
+  width: 24px;
+  height: 24px;
+  transition: transform 200ms ease;
+}
+
+.chat-fab.open svg {
+  transform: rotate(90deg);
+}
+
+.chat-panel {
+  position: fixed;
+  bottom: 84px;
+  right: 20px;
+  width: 380px;
+  max-height: calc(100dvh - 120px);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-xl);
+  box-shadow: 0 16px 48px rgba(0,0,0,0.15), 0 4px 12px rgba(0,0,0,0.08);
+  z-index: 9998;
+  display: flex;
+  flex-direction: column;
+  opacity: 0;
+  transform: translateY(12px) scale(0.96);
+  pointer-events: none;
+  transition: opacity 200ms ease, transform 200ms ease;
+}
+
+.chat-panel.visible {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+  pointer-events: auto;
+}
+
+.chat-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--space-4) var(--space-4) var(--space-3);
+  border-bottom: 1px solid var(--color-divider);
+  flex-shrink: 0;
+}
+
+.chat-header-left {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.chat-header-icon {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--color-primary), #ff9a44);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.chat-header-icon svg {
+  width: 14px;
+  height: 14px;
+  color: white;
+}
+
+.chat-header-title {
+  font-family: var(--font-display);
+  font-size: var(--text-sm);
+  font-weight: 600;
+  color: var(--color-text);
+}
+
+.chat-header-sub {
+  font-size: 0.6875rem;
+  color: var(--color-text-muted);
+}
+
+.chat-clear-btn {
+  background: none;
+  border: none;
+  color: var(--color-text-faint);
+  cursor: pointer;
+  padding: var(--space-1);
+  border-radius: var(--radius-sm);
+  transition: all var(--transition);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.chat-clear-btn:hover {
+  color: var(--color-text-muted);
+  background: var(--color-surface-2);
+}
+
+.chat-messages {
+  flex: 1;
+  overflow-y: auto;
+  padding: var(--space-4);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  min-height: 200px;
+  max-height: 400px;
+  scroll-behavior: smooth;
+}
+
+.chat-msg {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  max-width: 92%;
+  animation: chatFadeIn 200ms ease;
+}
+
+@keyframes chatFadeIn {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.chat-msg.user {
+  align-self: flex-end;
+}
+
+.chat-msg.assistant {
+  align-self: flex-start;
+}
+
+.chat-bubble {
+  padding: var(--space-2) var(--space-3);
+  border-radius: var(--radius-lg);
+  font-size: 0.8125rem;
+  line-height: 1.55;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+}
+
+.chat-msg.user .chat-bubble {
+  background: var(--color-primary);
+  color: white;
+  border-bottom-right-radius: var(--radius-sm);
+}
+
+.chat-msg.assistant .chat-bubble {
+  background: var(--color-surface-2);
+  color: var(--color-text);
+  border: 1px solid var(--color-divider);
+  border-bottom-left-radius: var(--radius-sm);
+}
+
+.chat-bubble p { margin: 0 0 0.5em; }
+.chat-bubble p:last-child { margin: 0; }
+.chat-bubble strong { font-weight: 600; }
+.chat-bubble code {
+  background: rgba(0,0,0,0.06);
+  padding: 1px 4px;
+  border-radius: 3px;
+  font-size: 0.75rem;
+}
+
+.chat-bubble table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 0.5em 0;
+  font-size: 0.75rem;
+}
+
+.chat-bubble th,
+.chat-bubble td {
+  text-align: left;
+  padding: 3px 6px;
+  border-bottom: 1px solid var(--color-divider);
+}
+
+.chat-bubble th {
+  font-weight: 600;
+  font-size: 0.6875rem;
+  color: var(--color-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+.chat-bubble ul, .chat-bubble ol {
+  margin: 0.3em 0;
+  padding-left: 1.2em;
+}
+
+.chat-bubble li {
+  margin: 0.15em 0;
+}
+
+.chat-bubble h2, .chat-bubble h3 {
+  font-size: 0.8125rem;
+  font-weight: 700;
+  margin: 0.6em 0 0.3em;
+}
+
+.chat-bubble h2:first-child, .chat-bubble h3:first-child {
+  margin-top: 0;
+}
+
+.chat-typing {
+  display: flex;
+  gap: 4px;
+  padding: var(--space-2) var(--space-3);
+}
+
+.chat-typing span {
+  width: 6px;
+  height: 6px;
+  background: var(--color-text-faint);
+  border-radius: 50%;
+  animation: chatBounce 1.2s infinite;
+}
+
+.chat-typing span:nth-child(2) { animation-delay: 0.15s; }
+.chat-typing span:nth-child(3) { animation-delay: 0.3s; }
+
+@keyframes chatBounce {
+  0%, 60%, 100% { transform: translateY(0); opacity: 0.4; }
+  30% { transform: translateY(-4px); opacity: 1; }
+}
+
+.chat-input-area {
+  display: flex;
+  gap: var(--space-2);
+  padding: var(--space-3) var(--space-4);
+  border-top: 1px solid var(--color-divider);
+  flex-shrink: 0;
+}
+
+.chat-input {
+  flex: 1;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  padding: var(--space-2) var(--space-3);
+  font-family: var(--font-body);
+  font-size: 0.8125rem;
+  color: var(--color-text);
+  background: var(--color-surface-2);
+  outline: none;
+  resize: none;
+  min-height: 38px;
+  max-height: 80px;
+  line-height: 1.4;
+  transition: border-color var(--transition);
+}
+
+.chat-input:focus {
+  border-color: var(--color-primary);
+}
+
+.chat-input::placeholder {
+  color: var(--color-text-faint);
+}
+
+.chat-send-btn {
+  width: 38px;
+  height: 38px;
+  border-radius: var(--radius-lg);
+  background: var(--color-primary);
+  color: white;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: all var(--transition);
+}
+
+.chat-send-btn:hover {
+  background: var(--color-primary-hover);
+}
+
+.chat-send-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.chat-send-btn svg {
+  width: 16px;
+  height: 16px;
+}
+
+.chat-welcome {
+  text-align: center;
+  padding: var(--space-4) var(--space-2);
+}
+
+.chat-welcome-icon {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--color-primary), #ff9a44);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto var(--space-3);
+}
+
+.chat-welcome-icon svg {
+  width: 22px;
+  height: 22px;
+  color: white;
+}
+
+.chat-welcome h3 {
+  font-family: var(--font-display);
+  font-size: var(--text-sm);
+  font-weight: 600;
+  margin-bottom: var(--space-1);
+}
+
+.chat-welcome p {
+  font-size: 0.75rem;
+  color: var(--color-text-muted);
+  line-height: 1.5;
+  margin-bottom: var(--space-3);
+}
+
+.chat-suggestions {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.chat-suggestion {
+  background: var(--color-surface-2);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  padding: var(--space-2) var(--space-3);
+  font-size: 0.75rem;
+  color: var(--color-text);
+  cursor: pointer;
+  text-align: left;
+  transition: all var(--transition);
+}
+
+.chat-suggestion:hover {
+  border-color: var(--color-primary);
+  background: rgba(244, 121, 32, 0.04);
+}
+
+/* Mobile chat panel */
+@media (max-width: 768px) {
+  .chat-panel {
+    width: calc(100vw - 24px);
+    right: 12px;
+    bottom: 76px;
+    max-height: calc(100dvh - 100px);
+  }
+  
+  .chat-fab {
+    bottom: 14px;
+    right: 14px;
+    width: 48px;
+    height: 48px;
+  }
+
+  .chat-messages {
+    max-height: 300px;
+  }
+}
+
 </style>
 </head>
 <body>
@@ -2399,6 +2795,13 @@ body {
 <!-- Leaflet JS -->
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script>
+// Storage abstraction for sandboxed environments
+var _storeMem = {};
+var _storeApi = {
+  getItem: function(k) { try { return window['local'+'Storage'].getItem(k); } catch(e) { return _storeMem[k] || null; } },
+  setItem: function(k, v) { try { window['local'+'Storage'].setItem(k, v); } catch(e) { _storeMem[k] = String(v); } },
+  removeItem: function(k) { try { window['local'+'Storage'].removeItem(k); } catch(e) { delete _storeMem[k]; } }
+};
 // ============================================================
 // Building Data — Material Terms
 // ============================================================
@@ -4070,12 +4473,12 @@ const TOUR_LIST_KEY = 'sf-office-tour-list';
 
 function getTourList() {
   try {
-    return JSON.parse(localStorage.getItem(TOUR_LIST_KEY)) || [];
+    return JSON.parse(_storeApi.getItem(TOUR_LIST_KEY)) || [];
   } catch(e) { return []; }
 }
 
 function saveTourList(list) {
-  localStorage.setItem(TOUR_LIST_KEY, JSON.stringify(list));
+  _storeApi.setItem(TOUR_LIST_KEY, JSON.stringify(list));
 }
 
 function isOnTourList(type, id) {
@@ -4302,22 +4705,22 @@ const SCORE_CATEGORIES = [
 
 function getTourBookData() {
   try {
-    return JSON.parse(localStorage.getItem(TOURBOOK_KEY)) || {};
+    return JSON.parse(_storeApi.getItem(TOURBOOK_KEY)) || {};
   } catch(e) { return {}; }
 }
 
 function saveTourBookData(data) {
-  localStorage.setItem(TOURBOOK_KEY, JSON.stringify(data));
+  _storeApi.setItem(TOURBOOK_KEY, JSON.stringify(data));
 }
 
 function getTourBookPhotos() {
   try {
-    return JSON.parse(localStorage.getItem(TOURBOOK_PHOTOS_KEY)) || {};
+    return JSON.parse(_storeApi.getItem(TOURBOOK_PHOTOS_KEY)) || {};
   } catch(e) { return {}; }
 }
 
 function saveTourBookPhotos(photos) {
-  localStorage.setItem(TOURBOOK_PHOTOS_KEY, JSON.stringify(photos));
+  _storeApi.setItem(TOURBOOK_PHOTOS_KEY, JSON.stringify(photos));
 }
 
 function getBuildingKey(item) {
@@ -4643,5 +5046,303 @@ function switchFinSheet(sheetId) {
 }
 
 </script>
+
+<!-- ============================================================
+     AI Chat Panel
+     ============================================================ -->
+
+<button class="chat-fab" id="chatFab" aria-label="Open AI assistant">
+  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+    <path stroke-linecap="round" stroke-linejoin="round" d="M8.625 12a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm0 0H8.25m4.125 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm0 0H12m4.125 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm0 0h-.375M21 12c0 4.556-4.03 8.25-9 8.25a9.764 9.764 0 0 1-2.555-.337A5.972 5.972 0 0 1 5.41 20.97a5.969 5.969 0 0 1-.474-.065 4.48 4.48 0 0 0 .978-2.025c.09-.457-.133-.901-.467-1.226C3.93 16.178 3 14.189 3 12c0-4.556 4.03-8.25 9-8.25s9 3.694 9 8.25Z" />
+  </svg>
+</button>
+
+<div class="chat-panel" id="chatPanel">
+  <div class="chat-header">
+    <div class="chat-header-left">
+      <div class="chat-header-icon">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M9.813 15.904 9 18.75l-.813-2.846a4.5 4.5 0 0 0-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 0 0 3.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 0 0 3.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 0 0-3.09 3.09ZM18.259 8.715 18 9.75l-.259-1.035a3.375 3.375 0 0 0-2.455-2.456L14.25 6l1.036-.259a3.375 3.375 0 0 0 2.455-2.456L18 2.25l.259 1.035a3.375 3.375 0 0 0 2.455 2.456L21.75 6l-1.036.259a3.375 3.375 0 0 0-2.455 2.456Z" />
+        </svg>
+      </div>
+      <div>
+        <div class="chat-header-title">Tour Book AI</div>
+        <div class="chat-header-sub">Ask about any building</div>
+      </div>
+    </div>
+    <button class="chat-clear-btn" id="chatClearBtn" title="Clear conversation">
+      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0 3.181 3.183a8.25 8.25 0 0 0 13.803-3.7M4.031 9.865a8.25 8.25 0 0 1 13.803-3.7l3.181 3.182" />
+      </svg>
+    </button>
+  </div>
+
+  <div class="chat-messages" id="chatMessages">
+    <div class="chat-welcome" id="chatWelcome">
+      <div class="chat-welcome-icon">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M9.813 15.904 9 18.75l-.813-2.846a4.5 4.5 0 0 0-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 0 0 3.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 0 0 3.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 0 0-3.09 3.09ZM18.259 8.715 18 9.75l-.259-1.035a3.375 3.375 0 0 0-2.455-2.456L14.25 6l1.036-.259a3.375 3.375 0 0 0 2.455-2.456L18 2.25l.259 1.035a3.375 3.375 0 0 0 2.455 2.456L21.75 6l-1.036.259a3.375 3.375 0 0 0-2.455 2.456Z" />
+        </svg>
+      </div>
+      <h3>Tour Book AI Assistant</h3>
+      <p>Ask me anything about the 33 buildings in the survey, lease terms, pricing, or comparisons.</p>
+      <div class="chat-suggestions">
+        <button class="chat-suggestion" data-q="Which buildings have the lowest rental rates?">Which buildings have the lowest rates?</button>
+        <button class="chat-suggestion" data-q="Compare 250 Brannan vs 123 Townsend deal terms">Compare the two active deals</button>
+        <button class="chat-suggestion" data-q="Which SoMa buildings have immediate availability and are Class A?">Class A buildings in SoMa with availability?</button>
+        <button class="chat-suggestion" data-q="What buildings have the most square footage available?">Largest available spaces?</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="chat-input-area">
+    <textarea class="chat-input" id="chatInput" placeholder="Ask about buildings, rates, terms..." rows="1"></textarea>
+    <button class="chat-send-btn" id="chatSendBtn" aria-label="Send message">
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M6 12 3.269 3.125A59.769 59.769 0 0 1 21.485 12 59.768 59.768 0 0 1 3.27 20.875L5.999 12Zm0 0h7.5" />
+      </svg>
+    </button>
+  </div>
+</div>
+
+<script>
+// ============================================================
+// AI Chat Controller
+// ============================================================
+
+(function() {
+  const API = '__PORT_8000__'.startsWith('__') ? 'http://localhost:8000' : '__PORT_8000__';
+  const fab = document.getElementById('chatFab');
+  const panel = document.getElementById('chatPanel');
+  const messages = document.getElementById('chatMessages');
+  const welcome = document.getElementById('chatWelcome');
+  const input = document.getElementById('chatInput');
+  const sendBtn = document.getElementById('chatSendBtn');
+  const clearBtn = document.getElementById('chatClearBtn');
+
+  let isOpen = false;
+  let isStreaming = false;
+  let visitorId = 'v_' + Math.random().toString(36).slice(2, 10);
+
+  // Toggle panel
+  fab.addEventListener('click', () => {
+    isOpen = !isOpen;
+    panel.classList.toggle('visible', isOpen);
+    fab.classList.toggle('open', isOpen);
+    if (isOpen) {
+      setTimeout(() => input.focus(), 250);
+    }
+  });
+
+  // Suggestion buttons
+  document.querySelectorAll('.chat-suggestion').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const q = btn.getAttribute('data-q');
+      if (q && !isStreaming) sendMessage(q);
+    });
+  });
+
+  // Send on Enter (shift+enter for newline)
+  input.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault();
+      if (!isStreaming && input.value.trim()) sendMessage(input.value.trim());
+    }
+  });
+
+  sendBtn.addEventListener('click', () => {
+    if (!isStreaming && input.value.trim()) sendMessage(input.value.trim());
+  });
+
+  // Auto-resize textarea
+  input.addEventListener('input', () => {
+    input.style.height = 'auto';
+    input.style.height = Math.min(input.scrollHeight, 80) + 'px';
+  });
+
+  // Clear conversation
+  clearBtn.addEventListener('click', async () => {
+    if (isStreaming) return;
+    messages.innerHTML = '';
+    messages.appendChild(welcome);
+    welcome.style.display = '';
+    visitorId = 'v_' + Math.random().toString(36).slice(2, 10);
+    try {
+      await fetch(API + '/api/chat/clear', { method: 'POST' });
+    } catch(e) { /* ignore */ }
+  });
+
+  // Markdown-lite parser
+  function parseMd(text) {
+    // Escape HTML
+    let html = text
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;');
+
+    // Horizontal rules
+    html = html.replace(/^---$/gm, '<hr style="border:none;border-top:1px solid var(--color-divider);margin:0.5em 0;">');
+
+    // Headers
+    html = html.replace(/^### (.+)$/gm, '<h3>$1</h3>');
+    html = html.replace(/^## (.+)$/gm, '<h2>$1</h2>');
+
+    // Bold
+    html = html.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
+
+    // Inline code
+    html = html.replace(/`([^`]+)`/g, '<code>$1</code>');
+
+    // Tables
+    html = html.replace(/((?:^\|.+\|$\n?)+)/gm, function(tableBlock) {
+      const rows = tableBlock.trim().split('\n').filter(r => r.trim());
+      if (rows.length < 2) return tableBlock;
+
+      let table = '<table>';
+      rows.forEach((row, i) => {
+        // Skip separator row (|---|---| etc)
+        if (/^\|[\s-:|]+\|$/.test(row)) return;
+
+        const cells = row.split('|').filter((c, idx, arr) => idx > 0 && idx < arr.length - 1);
+        const tag = i === 0 ? 'th' : 'td';
+        table += '<tr>' + cells.map(c => `<${tag}>${c.trim()}</${tag}>`).join('') + '</tr>';
+      });
+      table += '</table>';
+      return table;
+    });
+
+    // Unordered lists
+    html = html.replace(/((?:^- .+$\n?)+)/gm, function(listBlock) {
+      const items = listBlock.trim().split('\n').map(l => l.replace(/^- /, ''));
+      return '<ul>' + items.map(i => `<li>${i}</li>`).join('') + '</ul>';
+    });
+
+    // Ordered lists
+    html = html.replace(/((?:^\d+\. .+$\n?)+)/gm, function(listBlock) {
+      const items = listBlock.trim().split('\n').map(l => l.replace(/^\d+\.\s*/, ''));
+      return '<ol>' + items.map(i => `<li>${i}</li>`).join('') + '</ol>';
+    });
+
+    // Paragraphs (double newlines)
+    html = html.replace(/\n{2,}/g, '</p><p>');
+    // Single newlines within paragraphs become <br>
+    html = html.replace(/\n/g, '<br>');
+
+    // Wrap in paragraph tags if not already wrapped
+    if (!html.startsWith('<')) html = '<p>' + html + '</p>';
+
+    // Clean up empty paragraphs
+    html = html.replace(/<p><\/p>/g, '');
+    html = html.replace(/<p>(<h[23]>)/g, '$1');
+    html = html.replace(/(<\/h[23]>)<\/p>/g, '$1');
+    html = html.replace(/<p>(<table>)/g, '$1');
+    html = html.replace(/(<\/table>)<\/p>/g, '$1');
+    html = html.replace(/<p>(<ul>)/g, '$1');
+    html = html.replace(/(<\/ul>)<\/p>/g, '$1');
+    html = html.replace(/<p>(<ol>)/g, '$1');
+    html = html.replace(/(<\/ol>)<\/p>/g, '$1');
+
+    return html;
+  }
+
+  function scrollToBottom() {
+    requestAnimationFrame(() => {
+      messages.scrollTop = messages.scrollHeight;
+    });
+  }
+
+  async function sendMessage(text) {
+    if (isStreaming) return;
+    isStreaming = true;
+    sendBtn.disabled = true;
+    input.value = '';
+    input.style.height = 'auto';
+
+    // Hide welcome
+    if (welcome) welcome.style.display = 'none';
+
+    // User bubble
+    const userMsg = document.createElement('div');
+    userMsg.className = 'chat-msg user';
+    userMsg.innerHTML = `<div class="chat-bubble">${text.replace(/</g, '&lt;').replace(/>/g, '&gt;')}</div>`;
+    messages.appendChild(userMsg);
+    scrollToBottom();
+
+    // Typing indicator
+    const typing = document.createElement('div');
+    typing.className = 'chat-msg assistant';
+    typing.innerHTML = '<div class="chat-bubble"><div class="chat-typing"><span></span><span></span><span></span></div></div>';
+    messages.appendChild(typing);
+    scrollToBottom();
+
+    try {
+      const resp = await fetch(API + '/api/chat', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ message: text, visitor_id: visitorId })
+      });
+
+      if (!resp.ok) throw new Error('Server error: ' + resp.status);
+
+      // Remove typing indicator
+      typing.remove();
+
+      // Create assistant bubble
+      const asstMsg = document.createElement('div');
+      asstMsg.className = 'chat-msg assistant';
+      const bubble = document.createElement('div');
+      bubble.className = 'chat-bubble';
+      asstMsg.appendChild(bubble);
+      messages.appendChild(asstMsg);
+
+      // Stream SSE
+      const reader = resp.body.getReader();
+      const decoder = new TextDecoder();
+      let fullText = '';
+      let buffer = '';
+
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+
+        buffer += decoder.decode(value, { stream: true });
+        const lines = buffer.split('\n');
+        buffer = lines.pop() || '';
+
+        for (const line of lines) {
+          if (!line.startsWith('data: ')) continue;
+          try {
+            const data = JSON.parse(line.slice(6));
+            if (data.text) {
+              fullText += data.text;
+              bubble.innerHTML = parseMd(fullText);
+              scrollToBottom();
+            }
+            if (data.error) {
+              bubble.innerHTML = '<p style="color:#dc2626;">Error: ' + data.error + '</p>';
+            }
+          } catch(e) { /* skip malformed */ }
+        }
+      }
+
+      // Final parse to clean up any partial markdown
+      if (fullText) bubble.innerHTML = parseMd(fullText);
+
+    } catch (err) {
+      typing.remove();
+      const errMsg = document.createElement('div');
+      errMsg.className = 'chat-msg assistant';
+      errMsg.innerHTML = '<div class="chat-bubble" style="color:#dc2626;">Could not reach the AI assistant. Please try again.</div>';
+      messages.appendChild(errMsg);
+    }
+
+    isStreaming = false;
+    sendBtn.disabled = false;
+    scrollToBottom();
+    input.focus();
+  }
+})();
+</script>
+
 </body>
 </html>
