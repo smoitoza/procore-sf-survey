@@ -1842,6 +1842,31 @@ body {
       box-shadow: 0 0 0 3px rgba(244,121,32,0.1);
     }
 
+    /* Remove from tour button */
+    .tourbook-remove-wrap {
+      padding-top: var(--space-4);
+      margin-top: var(--space-4);
+      border-top: 1px solid var(--color-divider);
+    }
+    .tourbook-remove-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 16px;
+      font-size: var(--text-xs);
+      font-weight: 600;
+      color: #ef4444;
+      background: none;
+      border: 1px solid rgba(239,68,68,0.25);
+      border-radius: var(--radius-md);
+      cursor: pointer;
+      transition: background 150ms ease, border-color 150ms ease;
+    }
+    .tourbook-remove-btn:hover {
+      background: rgba(239,68,68,0.06);
+      border-color: rgba(239,68,68,0.4);
+    }
+
     /* Sort button */
     .tourbook-sort-btn {
       display: inline-flex;
@@ -5133,6 +5158,15 @@ function renderTourBook() {
         '</div>' +
       '</div>';
     
+    // Remove button
+    html +=
+      '<div class="tourbook-remove-wrap">' +
+        '<button class="tourbook-remove-btn" onclick="removeFromTourBook(\'' + item.type + '\', ' + item.id + ', \'' + item.name.replace(/'/g, "\\'") + '\')">' +
+          '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>' +
+          'Remove from Tour List' +
+        '</button>' +
+      '</div>';
+
     html += '</div></div>'; // end body, end card
   });
   
@@ -5145,6 +5179,12 @@ function renderTourBook() {
   
   // Render ranking
   updateRankingSummary();
+}
+
+function removeFromTourBook(type, id, name) {
+  if (!confirm('Remove ' + name + ' from your tour list?')) return;
+  toggleTourItem(type, id);
+  renderTourBook();
 }
 
 function toggleTourBookCard(key) {
